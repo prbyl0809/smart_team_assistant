@@ -40,5 +40,41 @@ pipeline {
         """
       }
     }
+
+      stage('Push to Docker Hub') {
+        steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+          sh '''
+            set -e
+
+            echo "$DH_TOKEN" | docker login -u "$DH_USER" --password-stdin
+
+            BACK_REMOTE="${DH_USER}/smartteam-backend"
+            FRONT_REMOTE="${DH_USER}/smartteam-frontend"
+
+            for TAG in "'${BUILD_NUMBER}'" "'${GIT_SHA}'" latest; do
+              docker tag "${IMG_BACK_LOCAL}:${TAG}"  "${BACK_REMOTE}:${TAG}"
+              docker tag "${IMG_FRONT_LOCAL}:${TAG}" "${FRONT_REMOTE}:${TAG}"
+            done
+
+            for TAG in "'${BUILD_NUMBER}'" "'${GIT_SHA}'" latest; do
+              docker push "${BACK_REMOTE}:${TAG}"
+              docker push "${FRONT_REMOTE}:${TAG}"
+            done
+
+            docker logout || true
+
+            echo "✅ Pushed: ${BACK_REMOTE}:{${BUILD_NUMBER},${GIT_SHA},latest}"
+            echo "✅ Pushed: ${FRONT_REMOTE}:{${BUILD_NUMBER},${GIT_SHA},latest}"
+          '''
+        }
+        }
+    }
+  }
+  
+  post {
+    success {
+      echo "Images available on Docker Hub under your namespace."
+    }
   }
 }
