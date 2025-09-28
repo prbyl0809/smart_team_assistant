@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://https://github.com/prbyl0809/smart_team_assistant',
+                    url: 'https://github.com/prbyl0809/smart_team_assistant',
                     credentialsId: 'github-token'
             }
         }
