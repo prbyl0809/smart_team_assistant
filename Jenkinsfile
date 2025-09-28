@@ -7,14 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/prbyl0809/smart_team_assistant',
-                    credentialsId: 'github-token'
-            }
-        }
-
         stage('Build Backend') {
             steps {
                 sh 'docker build -t $IMAGE_BACKEND ./backend'
