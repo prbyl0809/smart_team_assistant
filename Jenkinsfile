@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_BACKEND = "smartteam/backend:latest"
+        IMAGE_FRONTEND = "smartteam/frontend:latest"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,10 +15,15 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Backend') {
             steps {
-                sh 'echo "Building project..."'
-                sh 'ls -l'
+                sh 'docker build -t $IMAGE_BACKEND ./backend'
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                sh 'docker build -t $IMAGE_FRONTEND ./frontend'
             }
         }
 
