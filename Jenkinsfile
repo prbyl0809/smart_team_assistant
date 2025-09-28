@@ -42,28 +42,28 @@ pipeline {
     }
 
     stage('Push to Docker Hub') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
-          sh '''
-            set -e
+        steps {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+            sh """
+                set -e
 
-            echo "$DH_TOKEN" | docker login -u "$DH_USER" --password-stdin
+                echo "\$DH_TOKEN" | docker login -u "\$DH_USER" --password-stdin
 
-            BACK_REMOTE="${DH_USER}/smartteam-backend"
-            FRONT_REMOTE="${DH_USER}/smartteam-frontend"
+                BACK_REMOTE="\$DH_USER/smartteam-backend"
+                FRONT_REMOTE="\$DH_USER/smartteam-frontend"
 
-            for tag in '"${BUILD_NUMBER}"' '"${GIT_SHA}"' latest; do
-              docker tag "${IMG_BACK}:${tag}"  "${BACK_REMOTE}:${tag}"
-              docker tag "${IMG_FRONT}:${tag}" "${FRONT_REMOTE}:${tag}"
+                for tag in ${BUILD_NUMBER} ${GIT_SHA} latest; do
+                docker tag ${IMG_BACK}:\$tag  \${BACK_REMOTE}:\$tag
+                docker tag ${IMG_FRONT}:\$tag \${FRONT_REMOTE}:\$tag
 
-              docker push "${BACK_REMOTE}:${tag}"
-              docker push "${FRONT_REMOTE}:${tag}"
-            done
+                docker push \${BACK_REMOTE}:\$tag
+                docker push \${FRONT_REMOTE}:\$tag
+                done
 
-            docker logout || true
-          '''
+                docker logout || true
+            """
+            }
         }
-      }
     }
   }
 
