@@ -50,6 +50,7 @@ backend/coverage/
 backend/.eggs/
 backend/*.egg-info/
 backend/*.sqlite*
+backend/.pytest_cache/
 
 # Alembic caches (keep migrations scripts tracked)
 backend/alembic/**/__pycache__/

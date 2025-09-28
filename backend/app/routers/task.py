@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.task import TaskCreate, TaskRead, TaskUpdate
 from app.models import Task, User
-from app.dependencies.auth import get_db, get_current_user
+from app.dependencies.db import get_db
+from app.dependencies.auth import get_current_user
 from app.crud import task as crud
 
 router = APIRouter(prefix="/project/{project_id}/tasks", tags=["tasks"])

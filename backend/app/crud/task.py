@@ -40,7 +40,7 @@ def create_task(
     """
     verify_project_ownership(db, project_id, current_user)
 
-    new_task = Task(**task.dict(), project_id=project_id)
+    new_task = Task(**task.model_dump(), project_id=project_id)
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
@@ -117,7 +117,7 @@ def update_task(
     if not task:
         raise ValueError("Task not found")
     
-    for key, value in task_update.dict(exclude_unset=True).items():
+    for key, value in task_update.model_dump(exclude_unset=True).items():
         setattr(task, key, value)
     
     db.commit()
@@ -151,7 +151,7 @@ def partial_update_task(
     if not task:
         raise ValueError("Task not found")
     
-    for key, value in task_update.dict(exclude_unset=True).items():
+    for key, value in task_update.model_dump(exclude_unset=True).items():
         setattr(task, key, value)
     
     db.commit()

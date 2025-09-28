@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 from enum import Enum
@@ -40,6 +40,4 @@ class TaskRead(BaseModel):
     updated_at: datetime
     project_id: int
     assignee_id: Optional[int]
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
