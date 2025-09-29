@@ -24,7 +24,8 @@ api.interceptors.request.use((config) => {
   }
 
   const urlForChecks = (config.url ?? "").replace(/^\/api/, "");
-  const isGet = (config.method ?? "get").toLowerCase() === "get";
+  const method = (config.method ?? "get").toLowerCase();
+  const isGet = method === "get";
   const isAuth = urlForChecks.startsWith("/auth/");
   const hasQuery = urlForChecks.includes("?");
   const looksLikeFile = /\.[a-z0-9]+$/i.test(urlForChecks);
@@ -38,6 +39,13 @@ api.interceptors.request.use((config) => {
     !config.url!.endsWith("/")
   ) {
     config.url = `${config.url}/`;
+  }
+
+  if (!isGet) {
+    const endsWithIdSlash = /\/(\d+)\/$/.test(urlForChecks);
+    if (endsWithIdSlash && config.url?.endsWith("/")) {
+      config.url = config.url.slice(0, -1);
+    }
   }
 
   return config;
