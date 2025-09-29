@@ -47,7 +47,7 @@ export default function ProjectDetailsPage() {
         </List>
       </Box>
 
-      <CreateTaskForm projectId={data.project.id} />
+      <CreateTaskForm projectId={projectId} />
     </Container>
   );
 }
