@@ -1,17 +1,26 @@
-import { useParams } from 'react-router-dom';
-import { useProjectDetails } from '../hooks/useProjectDetails';
-import { CircularProgress, Container, Box, Typography, List, ListItem, ListItemText } from '@mui/material';
-import CreateTaskForm from '../components/CreateTaskForm';
+import { useParams } from "react-router-dom";
+import { useProjectDetails } from "../hooks/useProjectDetails";
+import {
+  CircularProgress,
+  Container,
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import CreateTaskForm from "../components/CreateTaskForm";
 
 export default function ProjectDetailsPage() {
-    const { id } = useParams();
-    const projectId = id ? parseInt(id, 10) : null;
-    const { data, isLoading, isError, error } = useProjectDetails(projectId!);
+  const { id } = useParams();
+  const projectId = Number(id);
+  const { data, isLoading, isError, error } = useProjectDetails(projectId!);
 
-    if (isLoading) return <CircularProgress />;
-    if (isError || !data) return <div>Error loading project details. {error?.message}</div>;
+  if (isLoading) return <CircularProgress />;
+  if (isError || !data)
+    return <div>Error loading project details. {error?.message}</div>;
 
-    return (
+  return (
     <Container maxWidth="md">
       <Box mt={4}>
         <Typography variant="h4" gutterBottom>
@@ -27,7 +36,10 @@ export default function ProjectDetailsPage() {
         <List>
           {data.tasks.map((task) => (
             <ListItem key={task.id}>
-              <ListItemText primary={task.title} secondary={`Status: ${task.status} | Priority: ${task.priority}`} />
+              <ListItemText
+                primary={task.title}
+                secondary={`Status: ${task.status} | Priority: ${task.priority}`}
+              />
             </ListItem>
           ))}
           {data.tasks.length === 0 && <Typography>No tasks yet.</Typography>}
