@@ -23,11 +23,11 @@ export const getProjectById = async (projectId: number): Promise<Project> => {
 export const getProjectWithTasks = async (
   projectId: number
 ): Promise<{ project: Project; tasks: Task[] }> => {
-  const projectRes = await api.get(`projects/${projectId}`);
+  const projectRes = await api.get(`projects/${projectId}/`);
 
   let tasks: Task[] = [];
   try {
-    const tasksRes = await api.get(`project/${projectId}/tasks`);
+    const tasksRes = await api.get(`project/${projectId}/tasks/`);
     tasks = tasksRes.data;
   } catch (error: any) {
     if (error.response && error.response.status == 404) {

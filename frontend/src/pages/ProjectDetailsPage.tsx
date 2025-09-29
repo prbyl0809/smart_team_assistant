@@ -14,7 +14,8 @@ import CreateTaskForm from "../components/CreateTaskForm";
 export default function ProjectDetailsPage() {
   const { id } = useParams();
   const projectId = Number(id);
-  const { data, isLoading, isError, error } = useProjectDetails(projectId!);
+
+  const { data, isLoading, isError, error } = useProjectDetails(projectId);
 
   if (isLoading) return <CircularProgress />;
   if (isError || !data)

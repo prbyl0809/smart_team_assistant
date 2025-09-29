@@ -23,7 +23,7 @@ export default function CreateTaskForm({ projectId }: { projectId: number }) {
   const { mutateAsync, isPending } = useCreateTask(projectId);
 
   const onSubmit = async (data: TaskFormData) => {
-    await mutateAsync(data as any);
+    await mutateAsync(data);
     reset();
   };
 
