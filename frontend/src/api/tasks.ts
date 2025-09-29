@@ -22,7 +22,7 @@ export const updateTaskStatus = async (
   taskId: number,
   newStatus: TaskStatus
 ) => {
-  const response = await api.patch(`project/${projectId}/tasks/${taskId}/`, {
+  const response = await api.put(`project/${projectId}/tasks/${taskId}/`, {
     status: newStatus,
   });
   return response.data;
