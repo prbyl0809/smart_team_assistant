@@ -14,6 +14,13 @@ export default function Navbar() {
   return (
     <AppBar position="static">
       <Toolbar>
+        <Box
+          component={"img"}
+          src="/logo-icon-gradient.svg"
+          alt="Project Manager Logo"
+          height={40}
+          mr={2}
+        />
         <Typography
           variant="h6"
           component={RouterLink}
@@ -25,7 +32,7 @@ export default function Navbar() {
             fontWeight: 600,
           }}
         >
-          SmartProject
+          Smart Team Assistant
         </Typography>
 
         <Box display="flex" gap={2}>

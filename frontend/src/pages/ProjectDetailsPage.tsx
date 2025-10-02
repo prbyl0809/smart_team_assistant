@@ -1,15 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useProjectDetails } from "../hooks/useProjectDetails";
-import {
-  CircularProgress,
-  Container,
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import { CircularProgress, Container, Box, Typography } from "@mui/material";
 import CreateTaskForm from "../components/CreateTaskForm";
+import TaskList from "../components/TaskList";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
@@ -22,32 +15,29 @@ export default function ProjectDetailsPage() {
     return <div>Error loading project details. {error?.message}</div>;
 
   return (
-    <Container maxWidth="md">
-      <Box mt={4}>
+    <Container maxWidth="xl">
+      <Box
+        mt={4}
+        p={3}
+        borderRadius={2}
+        sx={{ backgroundColor: "background.paper" }}
+      >
         <Typography variant="h4" gutterBottom>
           {data.project.name}
         </Typography>
         <Typography variant="body1" gutterBottom>
           {data.project.description}
         </Typography>
+        <Typography>
+          Created at: {new Date(data.project.created_at).toLocaleDateString()}
+        </Typography>
 
         <Typography variant="h6" mt={4}>
           Tasks
         </Typography>
-        <List>
-          {data.tasks.map((task) => (
-            <ListItem key={task.id}>
-              <ListItemText
-                primary={task.title}
-                secondary={`Status: ${task.status} | Priority: ${task.priority}`}
-              />
-            </ListItem>
-          ))}
-          {data.tasks.length === 0 && <Typography>No tasks yet.</Typography>}
-        </List>
+        <TaskList tasks={data.tasks} projectId={projectId} />
+        <CreateTaskForm projectId={projectId} />
       </Box>
-
-      <CreateTaskForm projectId={projectId} />
     </Container>
   );
 }

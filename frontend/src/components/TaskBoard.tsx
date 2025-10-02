@@ -13,7 +13,7 @@ import TaskColumn from "./TaskColumn";
 import TaskCard from "./TaskCard";
 import { Task } from "../types/task";
 import { Box } from "@mui/material";
-import { updateTaskStatus } from "../api/tasks";
+import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
 
 const columns = [
   { status: "todo", label: "To Do" },
@@ -29,6 +29,7 @@ type Props = {
 export default function TaskBoard({ tasks: incomingTasks, projectId }: Props) {
   const [tasks, setTasks] = useState<Task[]>(incomingTasks);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const { mutate: updateStatus } = useUpdateTaskStatus(projectId);
 
   useEffect(() => {
     setTasks(incomingTasks);
@@ -55,13 +56,7 @@ export default function TaskBoard({ tasks: incomingTasks, projectId }: Props) {
       t.id === active.id ? { ...t, status: newStatus } : t
     );
     setTasks(updatedTasks);
-
-    try {
-      updateTaskStatus(projectId, sourceTask.id, newStatus);
-    } catch (error) {
-      console.error("Failed to update task status:", error);
-      setTasks(tasks);
-    }
+    updateStatus({ taskId: sourceTask.id, status: newStatus });
   };
 
   return (

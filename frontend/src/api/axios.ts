@@ -29,22 +29,14 @@ api.interceptors.request.use((config) => {
   const isAuth = urlForChecks.startsWith("/auth/");
   const hasQuery = urlForChecks.includes("?");
   const looksLikeFile = /\.[a-z0-9]+$/i.test(urlForChecks);
+  const endsWithId = /\/(\d+)(?:\/?)(?:\?.*)?$/.test(urlForChecks);
 
-  if (
-    config.url &&
-    isGet &&
-    !isAuth &&
-    !hasQuery &&
-    !looksLikeFile &&
-    !config.url!.endsWith("/")
-  ) {
-    config.url = `${config.url}/`;
-  }
-
-  if (!isGet) {
-    const endsWithIdSlash = /\/(\d+)\/$/.test(urlForChecks);
-    if (endsWithIdSlash && config.url?.endsWith("/")) {
-      config.url = config.url.slice(0, -1);
+  if (config.url && !isAuth && !hasQuery && !looksLikeFile) {
+    const hasTrailingSlash = config.url.endsWith("/");
+    if (endsWithId) {
+      if (hasTrailingSlash) config.url = config.url.slice(0, -1);
+    } else if (isGet) {
+      if (!hasTrailingSlash) config.url = `${config.url}/`;
     }
   }
 

@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   db:
@@ -33,6 +33,22 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+  frontend-dev:
+    image: node:20-alpine
+    container_name: smart-frontend-dev
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_TARGET=http://backend:8000
+      - CHOKIDAR_USEPOLLING=1
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
     ports:
       - "5173:5173"
     depends_on:

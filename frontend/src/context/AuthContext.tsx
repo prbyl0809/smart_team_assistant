@@ -1,5 +1,4 @@
-import { useState, ReactNode } from "react";
-import { AuthContext } from "../hooks/useAuth";
+import { createContext, useState, ReactNode } from "react";
 
 export type AuthContextType = {
   token: string | null;
@@ -7,6 +6,10 @@ export type AuthContextType = {
   logout: () => void;
   isAuthenticated: boolean;
 };
+
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(() => {

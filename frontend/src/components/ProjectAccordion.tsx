@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Project } from "../types/project";
 import { useProjectDetails } from "../hooks/useProjectDetails";
 import TaskBoard from "./TaskBoard";
+import { Link } from "react-router-dom";
 
 type Props = {
   project: Project;
@@ -23,7 +24,15 @@ export default function ProjectAccordion({ project }: Props) {
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography sx={{ fontWeight: "bold" }}>{project.name}</Typography>
+        <Typography
+          component={Link}
+          to={`/projects/${project.id}`}
+          onClick={(e) => e.stopPropagation()}
+          color="textPrimary"
+          sx={{ fontWeight: "bold", textDecoration: "none" }}
+        >
+          {project.name}
+        </Typography>
       </AccordionSummary>
       <AccordionDetails>
         {isLoading && <CircularProgress />}
