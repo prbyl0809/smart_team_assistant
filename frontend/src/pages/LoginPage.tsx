@@ -9,24 +9,32 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, Link as RouterLink, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const loginMutation = useLogin();
   const { login: loginContext } = useAuth();
+
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const next = params.get("next") || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     try {
       const data = await loginMutation.mutateAsync({ username, password });
       loginContext(data.access_token);
-      navigate("/");
+      navigate(next, { replace: true });
     } catch (error) {
-      console.log("Login failed: ", error);
+      console.error("Login failed:", error);
+      setErrorMsg("Login failed. Please try again.");
     }
   };
 
@@ -37,6 +45,13 @@ export default function Login() {
           <Typography variant="h4" gutterBottom>
             Login
           </Typography>
+
+          {errorMsg && (
+            <Typography color="error" gutterBottom>
+              {errorMsg}
+            </Typography>
+          )}
+
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               label="Username"
