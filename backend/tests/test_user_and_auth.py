@@ -7,7 +7,7 @@ def test_register_user_success(client):
         "email": "bob@example.com",
         "password": "supersecret",
     }
-    resp = client.post("/users/register", json=payload)
+    resp = client.post("/api/users/register", json=payload)
     assert resp.status_code == status.HTTP_200_OK
     data = resp.json()
     assert data["username"] == payload["username"]
@@ -22,15 +22,15 @@ def test_register_user_duplicate_email_and_username(client):
         "password": "supersecret",
     }
     # First registration
-    assert client.post("/users/register", json=payload).status_code == 200
+    assert client.post("/api/users/register", json=payload).status_code == 200
     # Duplicate email
     dup_email = {**payload, "username": "carol2"}
-    r1 = client.post("/users/register", json=dup_email)
+    r1 = client.post("/api/users/register", json=dup_email)
     assert r1.status_code == 400
     assert r1.json()["detail"] == "Email already registered"
     # Duplicate username
     dup_username = {**payload, "email": "carol2@example.com"}
-    r2 = client.post("/users/register", json=dup_username)
+    r2 = client.post("/api/users/register", json=dup_username)
     assert r2.status_code == 400
     assert r2.json()["detail"] == "Username already taken"
 
@@ -38,7 +38,7 @@ def test_register_user_duplicate_email_and_username(client):
 def test_login_success(client, test_user):
     # OAuth2PasswordRequestForm expects form data
     resp = client.post(
-        "/auth/login",
+        "/api/auth/login",
         data={"username": test_user.username, "password": "secretpassword"},
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
@@ -50,7 +50,7 @@ def test_login_success(client, test_user):
 
 def test_login_invalid_credentials(client, test_user):
     resp = client.post(
-        "/auth/login",
+        "/api/auth/login",
         data={"username": test_user.username, "password": "wrong"},
         headers={"content-type": "application/x-www-form-urlencoded"},
     )
