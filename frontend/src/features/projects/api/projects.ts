@@ -1,10 +1,19 @@
-import api from "../../../shared/api/axios";
+﻿import api from "../../../shared/api/axios";
 import {
   Project,
   ProjectPriority,
   ProjectStatus,
 } from "../../../types/project";
 import { Task } from "../../../types/task";
+
+export type ProjectCreatePayload = {
+  name: string;
+  description: string;
+  due_date?: string | null;
+  status?: ProjectStatus;
+  priority?: ProjectPriority;
+  is_archived?: boolean;
+};
 
 export type ProjectUpdatePayload = Partial<{
   name: string;
@@ -20,13 +29,9 @@ export const fetchProjects = async (): Promise<Project[]> => {
   return response.data;
 };
 
-export const createProject = async (project: {
-  name: string;
-  description: string;
-  due_date?: string | null;
-  status?: ProjectStatus;
-  priority?: ProjectPriority;
-}) => {
+export const createProject = async (
+  project: ProjectCreatePayload
+): Promise<Project> => {
   const response = await api.post("projects/", project);
   return response.data;
 };
