@@ -12,6 +12,11 @@ import { useLogin } from "../features/auth/hooks/useLogin";
 import { useNavigate, Link as RouterLink, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
+const demoCredentials = {
+  username: "testuser",
+  password: "testpassword",
+};
+
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -45,6 +50,31 @@ export default function Login() {
           <Typography variant="h4" gutterBottom>
             Login
           </Typography>
+
+          <Box
+            sx={{
+              width: "100%",
+              mt: 1,
+              p: 2,
+              borderRadius: 2,
+              backgroundColor: "background.default",
+              border: (theme) => `1px solid ${theme.palette.divider}`,
+            }}
+          >
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              sx={{ fontWeight: 600 }}
+            >
+              Test Account for Demo
+            </Typography>
+            <Typography variant="body2">
+              Username: {demoCredentials.username}
+            </Typography>
+            <Typography variant="body2">
+              Password: {demoCredentials.password}
+            </Typography>
+          </Box>
 
           {errorMsg && (
             <Typography color="error" gutterBottom>
