@@ -8,9 +8,9 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useState } from "react";
-import { useLogin } from "../hooks/useLogin";
+import { useLogin } from "../features/auth/hooks/useLogin";
 import { useNavigate, Link as RouterLink, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function Login() {
   const [username, setUsername] = useState("");

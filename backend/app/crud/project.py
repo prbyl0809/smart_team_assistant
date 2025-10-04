@@ -15,11 +15,8 @@ def create_project(db: Session, project: ProjectCreate, owner_id: int) -> Projec
     Returns:
         Project: The created project instance.
     """
-    new_project = Project(
-        name=project.name,
-        description=project.description,
-        owner_id=owner_id,
-    )
+    data = project.model_dump(exclude_unset=True)
+    new_project = Project(owner_id=owner_id, **data)
     db.add(new_project)
     db.commit()
     db.refresh(new_project)
@@ -35,7 +32,16 @@ def get_projects_by_user(db: Session, user_id: int):
     Returns:
         List[Project]: A list of projects owned by the user.
     """
-    return db.query(Project).filter(Project.owner_id == user_id).all()
+    return (
+        db.query(Project)
+        .filter(Project.owner_id == user_id)
+        .order_by(
+            Project.due_date.is_(None),
+            Project.due_date.asc(),
+            Project.created_at.asc(),
+        )
+        .all()
+    )
 
 
 def get_project_by_id(db: Session, project_id: int, owner_id: int) -> Project:
@@ -68,7 +74,7 @@ def update_project(db: Session, project_id: int, updates: ProjectUpdate, owner_i
     if not project:
         return None
 
-    for field, value in updates.dict(exclude_unset=True).items():
+    for field, value in updates.model_dump(exclude_unset=True).items():
         setattr(project, field, value)
 
     db.commit()

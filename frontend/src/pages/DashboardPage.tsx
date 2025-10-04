@@ -1,6 +1,6 @@
 import { Container, Typography, CircularProgress, Box } from "@mui/material";
-import ProjectAccordion from "../components/ProjectAccordion";
-import { useProjects } from "../hooks/useProjects";
+import ProjectAccordion from "../features/projects/components/ProjectAccordion";
+import { useProjects } from "../features/projects/hooks/useProjects";
 
 export default function DashboardPage() {
   const { data: projects, isLoading, isError, error } = useProjects();

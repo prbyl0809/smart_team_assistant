@@ -1,43 +1,117 @@
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useProjectDetails } from "../hooks/useProjectDetails";
-import { CircularProgress, Container, Box, Typography } from "@mui/material";
-import CreateTaskForm from "../components/CreateTaskForm";
-import TaskList from "../components/TaskList";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useProjectDetails } from "../features/projects/hooks/useProjectDetails";
+import { useUpdateProject } from "../features/projects/hooks/useUpdateProject";
+import ProjectDetailsHeader from "../features/projects/components/ProjectDetailsHeader";
+import ProjectOverviewCard from "../features/projects/components/ProjectOverviewCard";
+import ProjectTasksCard from "../features/projects/components/ProjectTasksCard";
+import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
   const projectId = Number(id);
 
-  const { data, isLoading, isError, error } = useProjectDetails(projectId);
+  const isProjectIdValid = Number.isInteger(projectId) && projectId > 0;
+  const safeProjectId = isProjectIdValid ? projectId : 0;
 
-  if (isLoading) return <CircularProgress />;
-  if (isError || !data)
-    return <div>Error loading project details. {error?.message}</div>;
+  const { data, isLoading, isError, error } = useProjectDetails(safeProjectId);
+
+  const { mutateAsync: updateProject } = useUpdateProject(safeProjectId);
+
+  const taskStats = useMemo(() => {
+    const total = data?.tasks.length ?? 0;
+    const completed =
+      data?.tasks.filter((task) => task.status === "done").length ?? 0;
+    const inProgress =
+      data?.tasks.filter((task) => task.status === "in_progress").length ?? 0;
+    return { total, completed, inProgress };
+  }, [data?.tasks]);
+
+  if (!isProjectIdValid) {
+    return (
+      <Container maxWidth="md">
+        <Box mt={6} textAlign="center">
+          <Typography variant="h5">Invalid project identifier</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <Container maxWidth="md">
+        <Box mt={6} display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (isError || !data) {
+    return (
+      <Container maxWidth="md">
+        <Box mt={6} textAlign="center">
+          <Typography variant="h5" gutterBottom>
+            Error loading project details
+          </Typography>
+          <Typography color="text.secondary">
+            {error instanceof Error ? error.message : "Please try again later."}
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  const { project, tasks } = data;
 
   return (
     <Container maxWidth="xl">
-      <Box
-        mt={4}
-        p={3}
-        borderRadius={2}
-        sx={{ backgroundColor: "background.paper" }}
-      >
-        <Typography variant="h4" gutterBottom>
-          {data.project.name}
-        </Typography>
-        <Typography variant="body1" gutterBottom>
-          {data.project.description}
-        </Typography>
-        <Typography>
-          Created at: {new Date(data.project.created_at).toLocaleDateString()}
-        </Typography>
+      <Stack spacing={4} mt={4}>
+        <ProjectDetailsHeader
+          project={project}
+          onUpdate={async (payload) => {
+            await updateProject(payload);
+          }}
+        />
 
-        <Typography variant="h6" mt={4}>
-          Tasks
-        </Typography>
-        <TaskList tasks={data.tasks} projectId={projectId} />
-        <CreateTaskForm projectId={projectId} />
-      </Box>
+        <Box
+          sx={{
+            display: "grid",
+            gap: 3,
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "minmax(0,2fr) minmax(0,1fr)",
+            },
+            alignItems: "start",
+          }}
+        >
+          <Stack spacing={3}>
+            <ProjectOverviewCard
+              description={project.description}
+              onUpdate={async (payload) => {
+                await updateProject(payload);
+              }}
+            />
+
+            <ProjectTasksCard
+              projectId={safeProjectId}
+              tasks={tasks}
+              stats={taskStats}
+            />
+          </Stack>
+
+          <Stack spacing={3}>
+            <ProjectInfoCard project={project} />
+          </Stack>
+        </Box>
+      </Stack>
     </Container>
   );
 }

@@ -10,7 +10,7 @@ import {
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import api from "../api/axios";
+import api from "../shared/api/axios";
 
 type RegisterFormData = {
   username: string;

@@ -1,25 +1,37 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
+from app.models.project import ProjectStatus, ProjectPriority
 
 
 class ProjectBase(BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str
+    due_date: Optional[datetime] = None
+    status: Optional[ProjectStatus] = None
+    priority: Optional[ProjectPriority] = None
+    is_archived: bool = False
 
 
 class ProjectCreate(ProjectBase):
-    pass
+    ...
 
 
 class ProjectRead(ProjectBase):
     id: int
     owner_id: int
+    status: ProjectStatus
+    priority: ProjectPriority
+    is_archived: bool = False
     created_at: datetime
+    updated_at: datetime
     model_config = ConfigDict(from_attributes=True)
 
 
 class ProjectUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-
+    due_date: Optional[datetime] = None
+    status: Optional[ProjectStatus] = None
+    priority: Optional[ProjectPriority] = None
+    is_archived: bool = None

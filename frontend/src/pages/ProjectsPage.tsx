@@ -1,7 +1,7 @@
-import { Box, CircularProgress, Container, Typography } from '@mui/material';
-import { useProjects } from '../hooks/useProjects';
-import ProjectCard from '../components/ProjectCard';
-import ProjectForm from '../components/ProjectForm';
+import { Box, CircularProgress, Container, Typography } from "@mui/material";
+import { useProjects } from "../features/projects/hooks/useProjects";
+import ProjectCard from "../features/projects/components/ProjectCard";
+import ProjectForm from "../features/projects/components/ProjectForm";
 
 export default function ProjectsPage() {
   const { data: projects, isLoading, isError } = useProjects();
@@ -16,7 +16,9 @@ export default function ProjectsPage() {
         <ProjectForm />
 
         {isLoading && <CircularProgress />}
-        {isError && <Typography color="error">Failed to load projects</Typography>}
+        {isError && (
+          <Typography color="error">Failed to load projects</Typography>
+        )}
 
         {projects?.length === 0 && <Typography>No projects found.</Typography>}
 

@@ -49,3 +49,35 @@ def test_update_and_delete_project_authz(auth_client, db_session, test_user):
         assert r3.status_code == status.HTTP_404_NOT_FOUND
     finally:
         main.app.dependency_overrides.pop(_get_current_user, None)
+
+
+def test_projects_list_sorted_by_due_date_and_created(auth_client):
+    to_create = [
+        {"name": "No Due First", "description": "A"},
+        {
+            "name": "Due Late",
+            "description": "B",
+            "due_date": "2024-02-10T00:00:00Z",
+        },
+        {
+            "name": "Due Soon",
+            "description": "C",
+            "due_date": "2024-01-10T00:00:00Z",
+        },
+        {"name": "No Due Second", "description": "D"},
+    ]
+
+    for payload in to_create:
+        resp = auth_client.post("/api/projects/", json=payload)
+        assert resp.status_code == status.HTTP_201_CREATED
+
+    listed = auth_client.get("/api/projects/")
+    assert listed.status_code == status.HTTP_200_OK
+
+    names = [item["name"] for item in listed.json()]
+    assert names == [
+        "Due Soon",
+        "Due Late",
+        "No Due First",
+        "No Due Second",
+    ]

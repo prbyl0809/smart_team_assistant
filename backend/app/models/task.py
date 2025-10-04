@@ -31,6 +31,7 @@ class Task(Base):
     due_date: Mapped[datetime] = mapped_column(
         DateTime, nullable=True
     )
+    order: Mapped[Optional[int]] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )
@@ -45,5 +46,5 @@ class Task(Base):
     assignee: Mapped["User"] = relationship(back_populates="tasks")
 
     def __repr__(self):
-        return f"<Task(id={self.id}, title='{self.title}', status='{self.status}', priority='{self.priority}')>"
+        return f"<Task(id={self.id}, title='{self.title}', status='{self.status}', priority='{self.priority}', order={self.order})>"
     

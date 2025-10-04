@@ -1,17 +1,8 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
-from enum import Enum
 
-class TaskStatus(str, Enum):
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    DONE = "done"
-
-class TaskPriority(str, Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
+from app.models.task import TaskPriority, TaskStatus
 
 class TaskCreate(BaseModel):
     title: str
@@ -19,6 +10,7 @@ class TaskCreate(BaseModel):
     status: Optional[TaskStatus] = TaskStatus.TODO
     priority: Optional[TaskPriority] = TaskPriority.MEDIUM
     due_date: Optional[datetime] = None
+    order: Optional[int] = None
     assignee_id: Optional[int] = None
 
 class TaskUpdate(BaseModel):
@@ -27,6 +19,7 @@ class TaskUpdate(BaseModel):
     status: Optional[TaskStatus] = None
     priority: Optional[TaskPriority] = None
     due_date: Optional[datetime] = None
+    order: Optional[int] = None
     assignee_id: Optional[int] = None
 
 class TaskRead(BaseModel):
@@ -36,6 +29,7 @@ class TaskRead(BaseModel):
     status: TaskStatus
     priority: TaskPriority
     due_date: Optional[datetime]
+    order: Optional[int]
     created_at: datetime
     updated_at: datetime
     project_id: int
