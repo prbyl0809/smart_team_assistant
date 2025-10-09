@@ -1,54 +1,66 @@
-Smart Team Assistant — Backend
+﻿Smart Team Assistant - Backend
 
-Stack
-- FastAPI (app server) and Uvicorn (ASGI)
-- SQLAlchemy 2.0 (ORM) + Alembic (migrations)
-- PostgreSQL
-- JWT auth (python‑jose) + passlib (bcrypt)
+## Overview
+This FastAPI service powers authentication, project management, and task workflows for Smart Team Assistant. It provides JWT-secured endpoints, SQLAlchemy models, and extensive pytest coverage to keep business logic reliable.
 
-Run with Docker
-- From repo root: `docker-compose up --build`
-- API available at `http://localhost:8000` (interactive docs at `/docs`).
-- Postgres runs in the `db` service as configured in `docker-compose.yml`.
+## Key Features
+- JWT-based auth with registration and login flows
+- Project CRUD with ownership checks, prioritisation, status, due date, and archive fields
+- Task CRUD scoped to projects with ordering, status transitions, and permission enforcement
+- Consistent ordering (due date + created timestamp) for project listings
+- Ready-to-run Docker setup plus Alembic migrations for schema evolution
 
-Run Locally (without Docker)
-- Prereqs: Python 3.11+, PostgreSQL 15+.
-- Environment (create `backend/.env`):
-  - `DATABASE_URL=postgresql://USER:PASS@localhost:5432/DBNAME`
-  - `SECRET_KEY=your_secret_key`
-- Install deps:
-  - `python -m venv venv && source venv/bin/activate` (Windows: `venv\Scripts\activate`)
-  - `pip install -r requirements.txt`
-- Prepare DB: `alembic upgrade head`
-- Start API: `uvicorn main:app --reload`
+## Quick Start (Docker)
+```
+docker-compose up --build
+```
+Services: API at http://localhost:8000 (Swagger at /docs) and PostgreSQL via the `db` container.
 
-Project Structure (key paths)
-- `backend/main.py` — FastAPI app, CORS, and routers.
-- `backend/app/routers/*` — Route handlers for auth, users, projects, tasks.
-- `backend/app/models/*` — SQLAlchemy models and Base.
-- `backend/app/schemas/*` — Pydantic schemas for request/response.
-- `backend/app/crud/*` — DB operations.
-- `backend/app/dependencies/*` — Request dependencies (DB session, auth).
-- `backend/alembic/*` — Migration environment and versions.
+## Local Development (without Docker)
+1. Install Python 3.11+ and PostgreSQL 15+
+2. Copy `backend/.env.example` to `backend/.env` and update values
+3. Create virtual environment and install dependencies:
+   ```
+   python -m venv .venv
+   .\.venv\Scripts\activate   # Windows
+   source .venv/bin/activate    # macOS/Linux
+   pip install -r requirements.txt
+   ```
+4. Run migrations and start the dev server:
+   ```
+   alembic upgrade head
+   uvicorn main:app --reload
+   ```
 
-Environment Variables
-- `DATABASE_URL` (required) — SQLAlchemy/Alembic connection string.
-- `SECRET_KEY` (required) — JWT signing key.
+### Environment variables
+```
+DATABASE_URL=postgresql://smartuser:smartpass@localhost:5432/smartdb
+SECRET_KEY=change_me
+```
 
-Migrations
-- Create: `alembic revision --autogenerate -m "describe changes"`
-- Apply: `alembic upgrade head`
+## Running Tests
+```
+pytest
+```
+Test suite covers auth, projects, and tasks (including permission failures and ordering rules).
 
-Auth Flow (example)
-- Register: `POST /users/register` with JSON `{ username, email, password }`.
-- Login: `POST /auth/login` (OAuth2 form fields `username`, `password`).
-- Use token: Add header `Authorization: Bearer <token>`.
+## Project Structure Highlights
+- `main.py` – FastAPI app definition, CORS setup, router mounting
+- `app/routers/` – auth, user, project, and task endpoints
+- `app/models/` – SQLAlchemy models (Project, Task, User)
+- `app/schemas/` – Pydantic request/response schemas
+- `app/crud/` – DB operations with ownership validation
+- `app/dependencies/` – shared FastAPI dependencies (DB session, current user)
+- `alembic/` – migration environment and versioned scripts
+- `tests/` – pytest suite with fixtures, auth helpers, and endpoint coverage
 
-Endpoints (summary)
-- `POST /auth/login`, `GET /auth/protected`
-- `POST /users/register`, `GET /users/me`
-- `GET /projects`, `POST /projects`, `GET /projects/{id}`, `PUT /projects/{id}`, `DELETE /projects/{id}`
-- `GET /project/{project_id}/tasks`, `POST /project/{project_id}/tasks`, `GET /project/{project_id}/tasks/{task_id}`, `PUT|PATCH /project/{project_id}/tasks/{task_id}`, `DELETE /project/{project_id}/tasks/{task_id}`
+## Useful Commands
+- Create migration: `alembic revision --autogenerate -m "describe change"`
+- Upgrade DB: `alembic upgrade head`
+- Generate JWT for debugging: use `/auth/login` and copy the `access_token`
 
-CORS
-- By default allows `http://localhost:5173` (see `backend/main.py:12`). Update if your frontend origin differs.
+## API Reference
+Interactive documentation is always available at `http://localhost:8000/docs`. For CLI exploration use `httpie` or `curl`, e.g.
+```
+http POST :8000/api/projects name="Demo" description="First project" "Authorization:Bearer <token>"
+```

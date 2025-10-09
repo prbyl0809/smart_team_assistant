@@ -1,4 +1,4 @@
-﻿# Smart Team Assistant
+# Smart Team Assistant
 
 ## Purpose
 
@@ -95,7 +95,7 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 
-Example `.env`:
+Copy `backend/.env.example` to `backend/.env` and adjust as needed:
 
 ```
 DATABASE_URL=postgresql://smartuser:smartpass@localhost:5432/smartdb
@@ -109,6 +109,7 @@ cd frontend
 npm install
 npm run dev
 ```
+(Optional) Copy `frontend/.env.example` to `frontend/.env` if you need to override the API base URL.
 
 The default API base URL lives in `frontend/src/shared/api/axios.ts` (pointing to `/api`).
 
