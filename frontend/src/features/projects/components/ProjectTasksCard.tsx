@@ -13,12 +13,14 @@ type ProjectTasksCardProps = {
   projectId: number;
   tasks: Task[];
   stats: TaskStats;
+  onTaskClick?: (task: Task) => void;
 };
 
 export default function ProjectTasksCard({
   projectId,
   tasks,
   stats,
+  onTaskClick,
 }: ProjectTasksCardProps) {
   return (
     <Paper
@@ -51,7 +53,7 @@ export default function ProjectTasksCard({
           />
         </Stack>
       </Stack>
-      <TaskList tasks={tasks} projectId={projectId} />
+      <TaskList tasks={tasks} projectId={projectId} onTaskClick={onTaskClick} />
       <Divider sx={{ my: 3 }} />
       <CreateTaskForm projectId={projectId} />
     </Paper>

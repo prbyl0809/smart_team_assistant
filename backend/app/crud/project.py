@@ -1,5 +1,7 @@
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from app.models.project import Project
+from app.models.task import Task
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
 
@@ -32,9 +34,15 @@ def get_projects_by_user(db: Session, user_id: int):
     Returns:
         List[Project]: A list of projects owned by the user.
     """
-    return (
+    owned_query = db.query(Project).filter(Project.owner_id == user_id)
+    assigned_query = (
         db.query(Project)
-        .filter(Project.owner_id == user_id)
+        .join(Task, Task.project_id == Project.id)
+        .filter(Task.assignee_id == user_id)
+    )
+
+    projects = (
+        owned_query.union(assigned_query)
         .order_by(
             Project.due_date.is_(None),
             Project.due_date.asc(),
@@ -42,6 +50,7 @@ def get_projects_by_user(db: Session, user_id: int):
         )
         .all()
     )
+    return projects
 
 
 def get_project_by_id(db: Session, project_id: int, owner_id: int) -> Project:
@@ -55,7 +64,15 @@ def get_project_by_id(db: Session, project_id: int, owner_id: int) -> Project:
     Returns:
         Project: The project instance if found, otherwise None.
     """
-    return db.query(Project).filter(Project.id == project_id, Project.owner_id == owner_id).first()
+    return (
+        db.query(Project)
+        .outerjoin(Task, Task.project_id == Project.id)
+        .filter(
+            Project.id == project_id,
+            or_(Project.owner_id == owner_id, Task.assignee_id == owner_id),
+        )
+        .first()
+    )
 
 
 def update_project(db: Session, project_id: int, updates: ProjectUpdate, owner_id: int) -> Project:

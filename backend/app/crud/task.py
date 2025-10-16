@@ -1,10 +1,33 @@
 from typing import List
-from app.schemas.task import TaskCreate, TaskRead, TaskUpdate
-from app.models.project import Project
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from app.models.user import User
+from app.schemas.task import TaskCreate, TaskRead, TaskUpdate
+from app.models.project import Project
 from app.models.task import Task
+from app.models.user import User
+
+
+def verify_project_access(
+    db: Session,
+    project_id: int,
+    current_user: User,
+) -> Project:
+    project = (
+        db.query(Project)
+        .outerjoin(Task, Task.project_id == Project.id)
+        .filter(
+            Project.id == project_id,
+            or_(
+                Project.owner_id == current_user.id,
+                Task.assignee_id == current_user.id,
+            ),
+        )
+        .first()
+    )
+    if not project:
+        raise ValueError("Project not found")
+    return project
 
 
 def verify_project_ownership(
@@ -12,9 +35,7 @@ def verify_project_ownership(
     project_id: int,
     current_user: User
 ) -> Project:
-    project = db.query(Project).filter(Project.id == project_id, Project.owner_id == current_user.id).first()
-    if not project:
-        raise ValueError("Project not found")
+    project = verify_project_access(db, project_id, current_user)
     if project.owner_id != current_user.id:
         raise ValueError("Not authorized to access this project")
     return project
@@ -62,7 +83,7 @@ def get_tasks_for_project(
     Returns:
         list[TaskRead]: A list of tasks in the specified project.
     """
-    verify_project_ownership(db, project_id, current_user)
+    verify_project_access(db, project_id, current_user)
     return db.query(Task).filter(Task.project_id == project_id).all()
 
 
@@ -84,7 +105,7 @@ def get_task_by_id(
     Returns:
         TaskRead: The requested task instance.
     """
-    verify_project_ownership(db, project_id, current_user)
+    verify_project_access(db, project_id, current_user)
     task = db.query(Task).filter(Task.id == task_id, Task.project_id == project_id).first()
     if not task:
         raise ValueError("Task not found")

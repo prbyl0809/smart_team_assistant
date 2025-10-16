@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
@@ -14,6 +14,8 @@ import ProjectOverviewCard from "../features/projects/components/ProjectOverview
 import ProjectTasksCard from "../features/projects/components/ProjectTasksCard";
 import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
 import { useUsers } from "../features/users/hooks/useUsers";
+import TaskDetailsDialog from "../features/tasks/components/TaskDetailsDialog";
+import { Task } from "../types/task";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
@@ -26,6 +28,7 @@ export default function ProjectDetailsPage() {
 
   const { mutateAsync: updateProject } = useUpdateProject(safeProjectId);
   const { data: users = [], isLoading: usersLoading } = useUsers();
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const taskStats = useMemo(() => {
     const total = data?.tasks.length ?? 0;
@@ -74,48 +77,58 @@ export default function ProjectDetailsPage() {
   const { project, tasks } = data;
 
   return (
-    <Container maxWidth="xl">
-      <Stack spacing={4} mt={4}>
-        <ProjectDetailsHeader
-          project={project}
-          users={users}
-          isUsersLoading={usersLoading}
-          onUpdate={async (payload) => {
-            await updateProject(payload);
-          }}
-        />
+    <>
+      <Container maxWidth="xl">
+        <Stack spacing={4} mt={4}>
+          <ProjectDetailsHeader
+            project={project}
+            users={users}
+            isUsersLoading={usersLoading}
+            onUpdate={async (payload) => {
+              await updateProject(payload);
+            }}
+          />
 
-        <Box
-          sx={{
-            display: "grid",
-            gap: 3,
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "minmax(0,2fr) minmax(0,1fr)",
-            },
-            alignItems: "start",
-          }}
-        >
-          <Stack spacing={3}>
-            <ProjectOverviewCard
-              description={project.description}
-              onUpdate={async (payload) => {
-                await updateProject(payload);
-              }}
-            />
+          <Box
+            sx={{
+              display: "grid",
+              gap: 3,
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "minmax(0,2fr) minmax(0,1fr)",
+              },
+              alignItems: "start",
+            }}
+          >
+            <Stack spacing={3}>
+              <ProjectOverviewCard
+                description={project.description}
+                onUpdate={async (payload) => {
+                  await updateProject(payload);
+                }}
+              />
 
-            <ProjectTasksCard
-              projectId={safeProjectId}
-              tasks={tasks}
-              stats={taskStats}
-            />
-          </Stack>
+              <ProjectTasksCard
+                projectId={safeProjectId}
+                tasks={tasks}
+                stats={taskStats}
+                onTaskClick={(task) => setSelectedTask(task)}
+              />
+            </Stack>
 
-          <Stack spacing={3}>
-            <ProjectInfoCard project={project} />
-          </Stack>
-        </Box>
-      </Stack>
-    </Container>
+            <Stack spacing={3}>
+              <ProjectInfoCard project={project} />
+            </Stack>
+          </Box>
+        </Stack>
+      </Container>
+      <TaskDetailsDialog
+        open={!!selectedTask}
+        task={selectedTask}
+        onClose={() => setSelectedTask(null)}
+        projectId={safeProjectId}
+        users={users}
+      />
+    </>
   );
 }

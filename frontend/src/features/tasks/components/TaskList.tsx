@@ -15,6 +15,7 @@ import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
 type TaskListProps = {
   tasks: Task[];
   projectId: number;
+  onTaskClick?: (task: Task) => void;
 };
 
 const statusLabel = (status: TaskStatus) => {
@@ -46,11 +47,17 @@ const statusColor = (status: TaskStatus) => {
 const TaskListItem = ({
   task,
   onChangeStatus,
+  onClick,
 }: {
   task: Task;
   onChangeStatus: (taskId: number, status: TaskStatus) => void;
+  onClick?: (task: Task) => void;
 }) => (
-  <ListItem disablePadding sx={{ mb: 0.5 }}>
+  <ListItem
+    disablePadding
+    sx={{ mb: 0.5 }}
+    onClick={() => onClick?.(task)}
+  >
     <Paper
       variant="outlined"
       sx={{
@@ -58,6 +65,7 @@ const TaskListItem = ({
         py: 1,
         width: "100%",
         bgcolor: "background.paper",
+        cursor: onClick ? "pointer" : "default",
         "&:hover": {
           boxShadow: 4,
         },
@@ -75,7 +83,11 @@ const TaskListItem = ({
             id={`${task.id}`}
             value={task.status}
             renderValue={(value) => statusLabel(value)}
-            onChange={(e) => onChangeStatus(task.id, e.target.value)}
+            onChange={(e) => {
+              e.stopPropagation();
+              onChangeStatus(task.id, e.target.value);
+            }}
+            onClick={(e) => e.stopPropagation()}
             sx={(theme) => {
               const key = statusColor(task.status);
               const palette: any = theme.palette;
@@ -143,7 +155,11 @@ const TaskListItem = ({
   </ListItem>
 );
 
-export default function TaskList({ tasks, projectId }: TaskListProps) {
+export default function TaskList({
+  tasks,
+  projectId,
+  onTaskClick,
+}: TaskListProps) {
   const { mutate: updateStatus } = useUpdateTaskStatus(projectId);
   if (!tasks || tasks.length === 0) {
     return (
@@ -163,6 +179,7 @@ export default function TaskList({ tasks, projectId }: TaskListProps) {
           key={task.id}
           task={task}
           onChangeStatus={(taskId, status) => updateStatus({ taskId, status })}
+          onClick={onTaskClick}
         />
       ))}
     </List>
