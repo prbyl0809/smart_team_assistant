@@ -22,6 +22,7 @@ export type ProjectUpdatePayload = Partial<{
   status: ProjectStatus;
   priority: ProjectPriority;
   is_archived: boolean;
+  owner_id: number;
 }>;
 
 export const fetchProjects = async (): Promise<Project[]> => {

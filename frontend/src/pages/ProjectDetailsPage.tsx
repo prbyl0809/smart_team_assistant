@@ -13,6 +13,7 @@ import ProjectDetailsHeader from "../features/projects/components/ProjectDetails
 import ProjectOverviewCard from "../features/projects/components/ProjectOverviewCard";
 import ProjectTasksCard from "../features/projects/components/ProjectTasksCard";
 import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
+import { useUsers } from "../features/users/hooks/useUsers";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
@@ -24,6 +25,7 @@ export default function ProjectDetailsPage() {
   const { data, isLoading, isError, error } = useProjectDetails(safeProjectId);
 
   const { mutateAsync: updateProject } = useUpdateProject(safeProjectId);
+  const { data: users = [], isLoading: usersLoading } = useUsers();
 
   const taskStats = useMemo(() => {
     const total = data?.tasks.length ?? 0;
@@ -76,6 +78,8 @@ export default function ProjectDetailsPage() {
       <Stack spacing={4} mt={4}>
         <ProjectDetailsHeader
           project={project}
+          users={users}
+          isUsersLoading={usersLoading}
           onUpdate={async (payload) => {
             await updateProject(payload);
           }}

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from typing import Optional
 from app.models.project import ProjectStatus, ProjectPriority
@@ -35,3 +35,4 @@ class ProjectUpdate(BaseModel):
     status: Optional[ProjectStatus] = None
     priority: Optional[ProjectPriority] = None
     is_archived: bool = None
+    owner_id: Optional[int] = None

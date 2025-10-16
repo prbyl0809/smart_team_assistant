@@ -1,4 +1,5 @@
-import { Chip, Paper, Stack } from "@mui/material";
+import { useMemo } from "react";
+import { Paper, Stack } from "@mui/material";
 import InlineEditableText from "../../../shared/components/inline/InlineEditableText";
 import InlineEditableSelect from "../../../shared/components/inline/InlineEditableSelect";
 import InlineEditableDate from "../../../shared/components/inline/InlineEditableDate";
@@ -10,16 +11,46 @@ import {
 } from "../../../types/project";
 import { ProjectUpdatePayload } from "../api/projects";
 import { projectPriorityOptions, projectStatusOptions } from "./constants";
+import { User } from "../../../types/user";
 
 type ProjectDetailsHeaderProps = {
   project: Project;
   onUpdate: (payload: ProjectUpdatePayload) => Promise<void>;
+  users: User[];
+  isUsersLoading: boolean;
 };
 
 export default function ProjectDetailsHeader({
   project,
   onUpdate,
+  users,
+  isUsersLoading,
 }: ProjectDetailsHeaderProps) {
+  const ownerValue = String(project.owner_id);
+
+  const ownerOptions = useMemo(() => {
+    const mapped = users
+      .map((user) => ({
+        value: String(user.id),
+        label: user.username,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+
+    const options = [...mapped];
+
+    if (
+      project.owner_id &&
+      !options.some((option) => option.value === ownerValue)
+    ) {
+      options.push({
+        value: ownerValue,
+        label: `Owner #${project.owner_id}`,
+      });
+    }
+
+    return options;
+  }, [users, project.owner_id, ownerValue]);
+
   return (
     <Paper
       elevation={0}
@@ -64,10 +95,15 @@ export default function ProjectDetailsHeader({
             onSave={(due_date) => onUpdate({ due_date })}
             label="Due date"
           />
-          <Chip
-            label={`Owner #${project.owner_id}`}
-            size="small"
-            color="default"
+          <InlineEditableSelect<string>
+            value={ownerValue}
+            options={ownerOptions}
+            onSave={(value) => onUpdate({ owner_id: Number(value) })}
+            placeholder={
+              isUsersLoading ? "Loading owners..." : "Select project owner"
+            }
+            label="Choose project owner"
+            disabled={isUsersLoading || ownerOptions.length === 0}
           />
         </Stack>
 

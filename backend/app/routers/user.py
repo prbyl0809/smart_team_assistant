@@ -1,5 +1,7 @@
+from typing import List
+
 from app.schemas.user import UserCreate, UserResponse
-from app.crud.user import create_user, get_user_by_email, get_user_by_username
+from app.crud.user import create_user, get_user_by_email, get_user_by_username, get_users
 from app.dependencies.db import get_db
 from app.dependencies.auth import get_current_user
 from fastapi import APIRouter, Depends, HTTPException
@@ -26,3 +28,11 @@ def get_current_user_info(db: Session = Depends(get_db), current_user: UserRespo
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+
+@router.get("/", response_model=List[UserResponse])
+def list_users(
+    db: Session = Depends(get_db),
+    _: UserResponse = Depends(get_current_user)
+):
+    return get_users(db)
