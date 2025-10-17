@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import TaskColumn from "./TaskColumn";
 import TaskCard from "./TaskCard";
 import { Task } from "../../../types/task";
-import { Box, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
 
 const columns = [
