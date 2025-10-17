@@ -37,19 +37,19 @@ const STATUS_STYLES: Record<
   { background: string; text: string; border: string }
 > = {
   todo: {
-    background: colors.status.backlog,
-    text: colors.text.primary,
-    border: colors.status.backlog,
+    background: colors.statusUi.todo.background,
+    text: colors.statusUi.todo.text,
+    border: colors.statusUi.todo.border,
   },
   in_progress: {
-    background: colors.priority.medium,
-    text: colors.text.primary,
-    border: colors.priority.medium,
+    background: colors.statusUi.inProgress.background,
+    text: colors.statusUi.inProgress.text,
+    border: colors.statusUi.inProgress.border,
   },
   done: {
-    background: colors.status.completed,
-    text: colors.text.primary,
-    border: colors.priority.low,
+    background: colors.statusUi.done.background,
+    text: colors.statusUi.done.text,
+    border: colors.statusUi.done.border,
   },
 };
 
@@ -97,11 +97,13 @@ const TaskListItem = ({
               bgcolor: STATUS_STYLES[task.status].background,
               color: STATUS_STYLES[task.status].text,
               borderRadius: 1,
+              minWidth: 132,
               padding: 0,
               "& .MuiSelect-select": {
                 display: "flex",
                 alignItems: "center",
-                p: 0.5,
+                px: 1,
+                py: 0.5,
                 height: "0.8rem",
                 fontWeight: "bold",
                 fontSize: "0.65rem",

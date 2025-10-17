@@ -39,6 +39,11 @@ export const colors = {
     blocked: "#DC2626",
     completed: "#16A34A",
   },
+  statusUi: {
+    todo: { background: "#2F3441", text: "#B9C2D6", border: "#465067" },
+    inProgress: { background: "#3E341A", text: "#F5CD74", border: "#6B5222" },
+    done: { background: "#1F3529", text: "#88DFA5", border: "#2F5C42" },
+  },
   priority: {
     low: "#10B981",
     lowAlt: "#66BB6A",
