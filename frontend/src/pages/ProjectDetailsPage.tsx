@@ -18,7 +18,6 @@ import { useProjectDetails } from "../features/projects/hooks/useProjectDetails"
 import { useUpdateProject } from "../features/projects/hooks/useUpdateProject";
 import { useUsers } from "../features/users/hooks/useUsers";
 import { Task } from "../types/task";
-import { projectStatusOptions } from "../features/projects/components/constants";
 import HeroBanner from "../shared/components/HeroBanner";
 import { colors } from "../shared/styles/colors";
 import { pageShellSx } from "../shared/styles/layout";
@@ -41,7 +40,10 @@ export default function ProjectDetailsPage() {
       data?.tasks.filter((task) => task.status === "done").length ?? 0;
     const inProgress =
       data?.tasks.filter((task) => task.status === "in_progress").length ?? 0;
-    return { total, completed, inProgress };
+    const todo =
+      data?.tasks.filter((task) => task.status === "todo").length ?? 0;
+
+    return { total, todo, completed, inProgress };
   }, [data?.tasks]);
 
   if (!isProjectIdValid) {
@@ -81,19 +83,15 @@ export default function ProjectDetailsPage() {
 
   const { project, tasks } = data;
 
-  const statusLabel =
-    projectStatusOptions.find((option) => option.value === project.status)
-      ?.label ?? project.status;
-
   const summaryStats: Array<{
     label: string;
     value: number | string;
     palette: "primary" | "warning" | "success" | "secondary";
   }> = [
     { label: "Total tasks", value: taskStats.total, palette: "primary" },
+    { label: "To do", value: taskStats.todo, palette: "secondary" },
     { label: "In progress", value: taskStats.inProgress, palette: "warning" },
     { label: "Completed", value: taskStats.completed, palette: "success" },
-    { label: "Status", value: statusLabel, palette: "secondary" },
   ];
 
   return (
