@@ -37,7 +37,8 @@ export const colors = {
   },
   effects: {
     ray: "linear-gradient(195deg, rgba(86, 171, 255, 0.12) 0%, rgba(20, 61, 99, 0) 45%)",
-    depth: "linear-gradient(180deg, rgba(2, 18, 44, 0.55) 0%, rgba(3, 12, 25, 0.92) 70%, #020712 100%)",
+    depth:
+      "linear-gradient(180deg, rgba(2, 18, 44, 0.55) 0%, rgba(3, 12, 25, 0.92) 70%, #020712 100%)",
   },
   status: {
     backlog: "#707275",

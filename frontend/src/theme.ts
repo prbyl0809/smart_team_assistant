@@ -142,7 +142,7 @@ const theme = createTheme({
           backgroundColor: "rgba(3, 10, 20, 0.6)",
           backgroundImage: `
             linear-gradient(118deg, rgba(255, 255, 255, 0.035) 0%, rgba(3, 10, 20, 0.02) 25%),
-            linear-gradient(120deg, rgba(14, 35, 62, 0.6) 0%, rgba(10, 52, 82, 0.54) 58%, rgba(15, 48, 78, 0.58) 100%)
+            linear-gradient(120deg, rgba(41, 73, 117, 0.4) 0%, rgba(14, 50, 75, 0.4) 58%, rgba(12, 36, 58, 0.4) 100%)
           `,
           backdropFilter: "blur(20px)",
           borderBottom: "1px solid rgba(60, 157, 255, 0.28)",

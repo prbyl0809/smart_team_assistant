@@ -27,7 +27,7 @@ export default function Navbar() {
         <Box display="flex" alignItems="center" gap={3}>
           <Box
             component="img"
-            src="/logo-icon-gradient.svg"
+            src="/logo-icon-blue-gradient.svg"
             alt="Project Manager Logo"
             height={40}
           />
