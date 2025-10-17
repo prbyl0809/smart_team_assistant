@@ -115,7 +115,6 @@ const theme = createTheme({
           border: "1px solid rgba(111, 162, 255, 0.2)",
           boxShadow:
             "0 22px 42px rgba(10, 9, 24, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
-          backdropFilter: "blur(16px)",
         },
       },
     },

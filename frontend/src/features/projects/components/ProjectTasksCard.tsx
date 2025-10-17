@@ -78,7 +78,6 @@ export default function ProjectTasksCard({
 
   return (
     <Paper
-      elevation={0}
       sx={(theme) => ({
         ...glassPanel(theme),
       })}
@@ -107,7 +106,6 @@ export default function ProjectTasksCard({
                 sx={{
                   bgcolor: background,
                   color: textColor,
-                  borderRadius: 999,
                   border: `1px solid ${borderColor}`,
                   minWidth: 112,
                   "&:hover": {
