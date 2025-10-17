@@ -51,9 +51,9 @@ export default function ProjectTasksCard({
       label: "All",
       count: stats.total,
       styles: {
-        background: alpha(colors.accent.purple.main, 0.15),
-        text: colors.accent.purple.light,
-        border: alpha(colors.accent.purple.main, 0.4),
+        background: alpha(colors.accent.primary.main, 0.16),
+        text: colors.accent.secondary.light,
+        border: alpha(colors.accent.primary.main, 0.42),
       },
     },
     {

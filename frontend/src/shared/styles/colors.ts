@@ -5,13 +5,14 @@
  */
 export const colors = {
   navy: {
-    backdrop: "#080F20",
-    background: "#081022",
-    surface: "#0C1528",
-    surfaceAlt: "#0F172A",
-    heroStart: "#182747",
-    heroMid: "#21345E",
-    heroEnd: "#342866",
+    backdrop: "#020712",
+    background: "#030C19",
+    surface: "#061225",
+    surfaceAlt: "#0A1C33",
+    heroStart: "#07162B",
+    heroMid: "#0E2743",
+    heroEnd: "#133757",
+    highlight: "rgba(255, 255, 255, 0.08)",
   },
   text: {
     primary: "#EEF4FF",
@@ -19,19 +20,24 @@ export const colors = {
     tertiary: "rgba(232, 240, 255, 0.82)",
   },
   accent: {
-    purple: {
-      main: "#7F6DFF",
-      light: "#A99CFF",
-      dark: "#4B3ED4",
+    primary: {
+      main: "#3C9DFF",
+      light: "#68C3FF",
+      dark: "#0F5CBF",
     },
-    blue: {
-      main: "#4FA6FF",
-      light: "#7AC3FF",
-      dark: "#1E6BB8",
+    secondary: {
+      main: "#1FCFF0",
+      light: "#53DFF7",
+      dark: "#0B8CB8",
     },
-    cyan: "#5CC8FF",
-    heroGlow: "rgba(210, 218, 255, 0.18)",
-    heroSecondaryGlow: "rgba(90, 132, 210, 0.2)",
+    cyan: "#4FEAFC",
+    heroGlow: "rgba(84, 189, 255, 0.2)",
+    heroSecondaryGlow: "rgba(35, 134, 212, 0.22)",
+    heroHighlight: "rgba(255, 255, 255, 0.1)",
+  },
+  effects: {
+    ray: "linear-gradient(195deg, rgba(86, 171, 255, 0.12) 0%, rgba(20, 61, 99, 0) 45%)",
+    depth: "linear-gradient(180deg, rgba(2, 18, 44, 0.55) 0%, rgba(3, 12, 25, 0.92) 70%, #020712 100%)",
   },
   status: {
     backlog: "#707275",

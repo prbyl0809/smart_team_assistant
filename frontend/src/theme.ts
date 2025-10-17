@@ -5,14 +5,14 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: colors.accent.purple.main,
-      light: colors.accent.purple.light,
-      dark: colors.accent.purple.dark,
+      main: colors.accent.primary.main,
+      light: colors.accent.primary.light,
+      dark: colors.accent.primary.dark,
     },
     secondary: {
-      main: colors.accent.blue.main,
-      light: colors.accent.blue.light,
-      dark: colors.accent.blue.dark,
+      main: colors.accent.secondary.main,
+      light: colors.accent.secondary.light,
+      dark: colors.accent.secondary.dark,
     },
     background: {
       default: colors.navy.backdrop,
@@ -22,7 +22,7 @@ const theme = createTheme({
       primary: colors.text.primary,
       secondary: colors.text.secondary,
     },
-    divider: "rgba(127, 170, 255, 0.22)",
+    divider: "rgba(60, 157, 255, 0.22)",
   },
   typography: {
     fontFamily: "Roboto, sans-serif",
@@ -49,11 +49,15 @@ const theme = createTheme({
           minHeight: "100vh",
           backgroundColor: colors.navy.backdrop,
           backgroundImage: `
-            radial-gradient(circle at 10% 15%, rgba(111, 162, 255, 0.28), transparent 55%),
-            radial-gradient(circle at 85% 20%, rgba(127, 109, 255, 0.32), transparent 60%),
-            radial-gradient(circle at 35% 75%, rgba(56, 126, 255, 0.25), transparent 58%),
-            linear-gradient(145deg, ${colors.navy.heroStart} 0%, ${colors.navy.heroMid} 32%, ${colors.navy.heroEnd} 68%, #121437 100%)
+            ${colors.effects.ray},
+            radial-gradient(circle at 48% -18%, ${colors.accent.heroHighlight}, transparent 68%),
+            radial-gradient(circle at 18% 24%, rgba(68, 155, 232, 0.18), transparent 60%),
+            radial-gradient(circle at 82% 22%, rgba(31, 207, 240, 0.2), transparent 64%),
+            radial-gradient(circle at 34% 78%, rgba(48, 130, 214, 0.14), transparent 60%),
+            ${colors.effects.depth}
           `,
+          backgroundBlendMode:
+            "screen, screen, screen, soft-light, normal, normal",
           backgroundAttachment: "fixed",
           color: colors.text.primary,
         },
@@ -67,11 +71,11 @@ const theme = createTheme({
           height: 10,
         },
         "::-webkit-scrollbar-track": {
-          backgroundColor: "rgba(9, 15, 27, 0.72)",
+          backgroundColor: "rgba(6, 12, 24, 0.75)",
         },
         "::-webkit-scrollbar-thumb": {
           backgroundImage:
-            "linear-gradient(180deg, rgba(79, 166, 255, 0.8), rgba(99, 122, 255, 0.78))",
+            "linear-gradient(180deg, rgba(60, 157, 255, 0.8), rgba(31, 207, 240, 0.78))",
           borderRadius: 10,
         },
       },
@@ -84,24 +88,36 @@ const theme = createTheme({
           paddingInline: "1.4rem",
           paddingBlock: "0.5rem",
           letterSpacing: "0.04em",
+          color: colors.text.primary,
+          fontWeight: 600,
+          "& .MuiButton-startIcon, & .MuiButton-endIcon": {
+            color: "inherit",
+          },
+        },
+        contained: {
+          color: colors.white,
+          "& .MuiButton-startIcon, & .MuiButton-endIcon": {
+            color: colors.white,
+          },
         },
         containedPrimary: {
           backgroundImage:
-            "linear-gradient(135deg, #7F6DFF 0%, #4254FF 45%, #4FA6FF 100%)",
+            "linear-gradient(135deg, #0d60ccff 0%, #2675c0ff 45%, #178497ff 100%)",
           boxShadow:
-            "0 8px 18px rgba(109, 75, 204, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
+            "0 8px 18px rgba(15, 92, 191, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
           "&:hover": {
             backgroundImage:
-              "linear-gradient(135deg, #998BFF 0%, #4F64FF 50%, #6DC0FF 100%)",
+              "linear-gradient(135deg, #2A8EFF 0%, #27A7FF 50%, #3DE2FF 100%)",
             boxShadow:
-              "0 12px 22px rgba(97, 70, 195, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18)",
+              "0 12px 22px rgba(14, 91, 189, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18)",
           },
         },
         outlined: {
-          borderColor: "rgba(111, 162, 255, 0.5)",
+          borderColor: "rgba(60, 157, 255, 0.5)",
+          color: colors.text.primary,
           "&:hover": {
-            borderColor: colors.accent.purple.main,
-            backgroundColor: "rgba(127, 170, 255, 0.08)",
+            borderColor: colors.accent.primary.main,
+            backgroundColor: "rgba(31, 207, 240, 0.08)",
           },
         },
       },
@@ -109,25 +125,29 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgba(12, 21, 40, 0.9)",
-          backgroundImage:
-            "linear-gradient(170deg, rgba(111, 162, 255, 0.22), rgba(127, 109, 255, 0.12))",
-          border: "1px solid rgba(111, 162, 255, 0.2)",
+          backgroundColor: "rgba(4, 12, 25, 0.9)",
+          backgroundImage: `
+            linear-gradient(155deg, rgba(255, 255, 255, 0.045) 6%, rgba(4, 12, 25, 0) 46%),
+            linear-gradient(170deg, rgba(60, 157, 255, 0.12), rgba(31, 207, 240, 0.07))
+          `,
+          border: "1px solid rgba(60, 157, 255, 0.18)",
           boxShadow:
-            "0 22px 42px rgba(10, 9, 24, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
+            "0 22px 42px rgba(3, 8, 18, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04)",
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgba(8, 14, 28, 0.58)",
-          backgroundImage:
-            "linear-gradient(120deg, rgba(20, 34, 64, 0.65) 0%, rgba(26, 42, 86, 0.52) 60%, rgba(40, 36, 82, 0.58) 100%)",
+          backgroundColor: "rgba(3, 10, 20, 0.6)",
+          backgroundImage: `
+            linear-gradient(118deg, rgba(255, 255, 255, 0.035) 0%, rgba(3, 10, 20, 0.02) 25%),
+            linear-gradient(120deg, rgba(14, 35, 62, 0.6) 0%, rgba(10, 52, 82, 0.54) 58%, rgba(15, 48, 78, 0.58) 100%)
+          `,
           backdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(90, 132, 210, 0.3)",
+          borderBottom: "1px solid rgba(60, 157, 255, 0.28)",
           boxShadow:
-            "0 18px 36px rgba(4, 6, 18, 0.55), inset 0 1px 0 rgba(210, 218, 255, 0.07)",
+            "0 18px 36px rgba(4, 10, 22, 0.58), inset 0 1px 0 rgba(210, 238, 255, 0.07)",
         },
       },
     },
@@ -146,13 +166,13 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "rgba(111, 162, 255, 0.3)",
+            borderColor: "rgba(60, 157, 255, 0.3)",
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "rgba(111, 162, 255, 0.6)",
+            borderColor: "rgba(60, 157, 255, 0.6)",
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#7F6DFF",
+            borderColor: colors.accent.primary.main,
           },
         },
       },
@@ -168,16 +188,19 @@ const theme = createTheme({
     MuiLink: {
       defaultProps: {
         underline: "hover",
-        color: "#8AD9FF",
+        color: "#74DBFF",
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
           borderRadius: 14,
-          border: "1px solid rgba(111, 162, 255, 0.2)",
-          backgroundImage:
-            "linear-gradient(165deg, rgba(111, 162, 255, 0.18), rgba(79, 166, 255, 0.1))",
+          border: "1px solid rgba(60, 157, 255, 0.2)",
+          backgroundColor: "rgba(4, 12, 25, 0.86)",
+          backgroundImage: `
+            linear-gradient(150deg, rgba(255, 255, 255, 0.035) 10%, rgba(4, 12, 25, 0) 42%),
+            linear-gradient(165deg, rgba(60, 157, 255, 0.1), rgba(31, 207, 240, 0.06))
+          `,
         },
       },
     },

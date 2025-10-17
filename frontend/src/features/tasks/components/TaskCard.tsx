@@ -22,7 +22,7 @@ export default function TaskCard({ task }: Props) {
         backgroundColor: colors.kanban.cardBg,
         color: colors.text.primary,
         borderRadius: 2,
-        border: `1px solid ${alpha(colors.accent.purple.main, 0.14)}`,
+        border: `1px solid ${alpha(colors.accent.primary.main, 0.14)}`,
         borderLeft: `6px solid ${priorityAccent[task.priority]}`,
       }}
     >
