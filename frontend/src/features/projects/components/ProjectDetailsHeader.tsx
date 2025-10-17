@@ -4,6 +4,7 @@ import InlineEditableText from "../../../shared/components/inline/InlineEditable
 import InlineEditableSelect from "../../../shared/components/inline/InlineEditableSelect";
 import InlineEditableDate from "../../../shared/components/inline/InlineEditableDate";
 import InlineEditableSwitch from "../../../shared/components/inline/InlineEditableSwitch";
+import { glassPanel } from "../../../shared/styles/glassPanel";
 import {
   Project,
   ProjectPriority,
@@ -54,12 +55,9 @@ export default function ProjectDetailsHeader({
   return (
     <Paper
       elevation={0}
-      sx={{
-        p: 4,
-        borderRadius: 3,
-        border: 1,
-        borderColor: (theme) => theme.palette.divider,
-      }}
+      sx={(theme) => ({
+        ...glassPanel(theme),
+      })}
     >
       <Stack spacing={2}>
         <InlineEditableText

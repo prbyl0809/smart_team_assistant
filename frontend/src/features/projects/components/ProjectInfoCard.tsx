@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
 import { Project } from "../../../types/project";
+import { glassPanel } from "../../../shared/styles/glassPanel";
 import { projectPriorityOptions, projectStatusOptions } from "./constants";
 
 type ProjectInfoCardProps = {
@@ -20,12 +21,9 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
   return (
     <Paper
       elevation={0}
-      sx={{
-        p: 3,
-        borderRadius: 2,
-        border: 1,
-        borderColor: (theme) => theme.palette.divider,
-      }}
+      sx={(theme) => ({
+        ...glassPanel(theme),
+      })}
     >
       <Typography variant="h6" gutterBottom>
         Project info
@@ -44,9 +42,9 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
                 )?.label ?? project.status
               }
               sx={{
-                bgcolor: "transparent",
-                border: 1,
-                borderColor: (theme) => theme.palette.divider,
+                bgcolor: "rgba(157, 108, 255, 0.18)",
+                color: "primary.light",
+                border: "1px solid rgba(157, 108, 255, 0.32)",
               }}
             />
           }
@@ -62,9 +60,9 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
                 )?.label ?? project.priority
               }
               sx={{
-                bgcolor: "transparent",
-                border: 1,
-                borderColor: (theme) => theme.palette.divider,
+                bgcolor: "rgba(92, 200, 255, 0.16)",
+                color: "secondary.light",
+                border: "1px solid rgba(92, 200, 255, 0.32)",
               }}
             />
           }

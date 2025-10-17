@@ -1,5 +1,6 @@
 import { Paper, Typography } from "@mui/material";
 import InlineEditableText from "../../../shared/components/inline/InlineEditableText";
+import { glassPanel } from "../../../shared/styles/glassPanel";
 import { ProjectUpdatePayload } from "../api/projects";
 
 type ProjectOverviewCardProps = {
@@ -14,12 +15,9 @@ export default function ProjectOverviewCard({
   return (
     <Paper
       elevation={0}
-      sx={{
-        p: 3,
-        borderRadius: 2,
-        border: 1,
-        borderColor: (theme) => theme.palette.divider,
-      }}
+      sx={(theme) => ({
+        ...glassPanel(theme),
+      })}
     >
       <Typography variant="h6" gutterBottom>
         Overview

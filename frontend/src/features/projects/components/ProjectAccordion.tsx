@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function ProjectAccordion({ project }: Props) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const { data, isLoading, isError } = useProjectDetails(project.id);
 

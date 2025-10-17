@@ -4,18 +4,24 @@ import {
   Box,
   CircularProgress,
   Container,
+  Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { useProjectDetails } from "../features/projects/hooks/useProjectDetails";
-import { useUpdateProject } from "../features/projects/hooks/useUpdateProject";
+import { alpha } from "@mui/material/styles";
 import ProjectDetailsHeader from "../features/projects/components/ProjectDetailsHeader";
+import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
 import ProjectOverviewCard from "../features/projects/components/ProjectOverviewCard";
 import ProjectTasksCard from "../features/projects/components/ProjectTasksCard";
-import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
-import { useUsers } from "../features/users/hooks/useUsers";
 import TaskDetailsDialog from "../features/tasks/components/TaskDetailsDialog";
+import { useProjectDetails } from "../features/projects/hooks/useProjectDetails";
+import { useUpdateProject } from "../features/projects/hooks/useUpdateProject";
+import { useUsers } from "../features/users/hooks/useUsers";
 import { Task } from "../types/task";
+import { projectStatusOptions } from "../features/projects/components/constants";
+import HeroBanner from "../shared/components/HeroBanner";
+import { colors } from "../shared/styles/colors";
+import { pageShellSx } from "../shared/styles/layout";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
@@ -25,7 +31,6 @@ export default function ProjectDetailsPage() {
   const safeProjectId = isProjectIdValid ? projectId : 0;
 
   const { data, isLoading, isError, error } = useProjectDetails(safeProjectId);
-
   const { mutateAsync: updateProject } = useUpdateProject(safeProjectId);
   const { data: users = [], isLoading: usersLoading } = useUsers();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -76,10 +81,89 @@ export default function ProjectDetailsPage() {
 
   const { project, tasks } = data;
 
+  const statusLabel =
+    projectStatusOptions.find((option) => option.value === project.status)
+      ?.label ?? project.status;
+
+  const summaryStats: Array<{
+    label: string;
+    value: number | string;
+    palette: "primary" | "warning" | "success" | "secondary";
+  }> = [
+    { label: "Total tasks", value: taskStats.total, palette: "primary" },
+    { label: "In progress", value: taskStats.inProgress, palette: "warning" },
+    { label: "Completed", value: taskStats.completed, palette: "success" },
+    { label: "Status", value: statusLabel, palette: "secondary" },
+  ];
+
   return (
     <>
-      <Container maxWidth="xl">
-        <Stack spacing={4} mt={4}>
+      <Box sx={pageShellSx}>
+        <HeroBanner containerProps={{ maxWidth: "xl" }}>
+          <Stack spacing={4}>
+            <Box>
+              <Typography variant="overline" sx={{ letterSpacing: "0.12em" }}>
+                Project
+              </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 700 }}>
+                {project.name}
+              </Typography>
+            </Box>
+
+            <Grid container spacing={2}>
+              {summaryStats.map((stat) => (
+                <Grid
+                  key={stat.label}
+                  size={{ xs: 6, sm: 3 }}
+                  sx={{ display: "flex" }}
+                >
+                  <Box
+                    sx={(theme) => ({
+                      flex: 1,
+                      p: 3,
+                      borderRadius: 2,
+                      backgroundColor: alpha(colors.navy.surface, 0.62),
+                      border: `1px solid ${alpha(
+                        theme.palette.secondary.main,
+                        0.28
+                      )}`,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 0.75,
+                      boxShadow:
+                        "0 14px 32px rgba(8, 10, 30, 0.48), inset 0 1px 0 rgba(255,255,255,0.06)",
+                    })}
+                  >
+                    <Typography
+                      variant="h4"
+                      sx={(theme) => ({
+                        fontWeight: 700,
+                        color: theme.palette[stat.palette].main,
+                      })}
+                    >
+                      {stat.value}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: colors.text.tertiary }}
+                    >
+                      {stat.label}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Stack>
+        </HeroBanner>
+
+        <Container
+          maxWidth="xl"
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: { xs: 4, md: 5 },
+          }}
+        >
           <ProjectDetailsHeader
             project={project}
             users={users}
@@ -95,7 +179,7 @@ export default function ProjectDetailsPage() {
               gap: 3,
               gridTemplateColumns: {
                 xs: "1fr",
-                md: "minmax(0,2fr) minmax(0,1fr)",
+                lg: "minmax(0,2fr) minmax(0,1fr)",
               },
               alignItems: "start",
             }}
@@ -120,8 +204,8 @@ export default function ProjectDetailsPage() {
               <ProjectInfoCard project={project} />
             </Stack>
           </Box>
-        </Stack>
-      </Container>
+        </Container>
+      </Box>
       <TaskDetailsDialog
         open={!!selectedTask}
         task={selectedTask}

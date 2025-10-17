@@ -164,7 +164,7 @@ export default function ProjectCard({ project }: Props) {
     <Card
       variant="outlined"
       sx={{
-        borderRadius: 3,
+        borderRadius: 2,
         height: "100%",
         display: "flex",
         flexDirection: "column",
@@ -264,7 +264,7 @@ export function ProjectCardSkeleton() {
     <Card
       variant="outlined"
       sx={{
-        borderRadius: 3,
+        borderRadius: 2,
         height: "100%",
         display: "flex",
         flexDirection: "column",

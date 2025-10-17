@@ -6,6 +6,7 @@ import {
 import { Task } from "../../../types/task";
 import SortableTask from "./SortableTask";
 import { useDroppable } from "@dnd-kit/core";
+import { colors } from "../../../shared/styles/colors";
 
 type Props = {
   status: Task["status"];
@@ -24,9 +25,13 @@ export default function TaskColumn({ status, label, tasks }: Props) {
   return (
     <Paper
       ref={setNodeRef}
-      sx={{ p: 2, backgroundColor: "#1D1F2B", height: "100%" }}
+      sx={{
+        p: 2,
+        backgroundColor: colors.kanban.columnBg,
+        height: "100%",
+      }}
     >
-      <Typography variant="h6" sx={{ color: "white", mb: 2 }}>
+      <Typography variant="h6" sx={{ color: colors.text.primary, mb: 2 }}>
         {label}
       </Typography>
 

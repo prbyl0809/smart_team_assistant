@@ -2,15 +2,20 @@ import {
   Box,
   Button,
   Container,
-  TextField,
-  Typography,
   Link as MuiLink,
   Paper,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import api from "../shared/api/axios";
+import { glassPanel } from "../shared/styles/glassPanel";
+import HeroBanner from "../shared/components/HeroBanner";
+import { pageShellSx } from "../shared/styles/layout";
+import { colors } from "../shared/styles/colors";
 
 type RegisterFormData = {
   username: string;
@@ -41,63 +46,99 @@ export default function Register() {
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography variant="h4" align="center" gutterBottom>
-            Register
+    <Box sx={pageShellSx}>
+      <HeroBanner containerProps={{ maxWidth: "sm" }}>
+        <Stack spacing={2.5}>
+          <Typography variant="h3" sx={{ fontWeight: 700 }}>
+            Create your account
           </Typography>
+          <Typography variant="body1" sx={{ color: colors.text.tertiary }}>
+            Join the workspace to plan projects, connect with teammates, and
+            deliver outcomes faster with shared visibility.
+          </Typography>
+        </Stack>
+      </HeroBanner>
 
-          <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <TextField
-              label="Username"
-              fullWidth
-              margin="normal"
-              {...register("username", { required: "Username is required" })}
-              error={!!errors.username}
-              helperText={errors.username?.message}
-            />
-            <TextField
-              label="Email"
-              type="email"
-              fullWidth
-              margin="normal"
-              {...register("email", { required: "Email is required" })}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-            />
-            <TextField
-              label="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              {...register("password", { required: "Password is required" })}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-            />
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mt: 2 }}
-              disabled={mutation.isPending}
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Paper
+          sx={(theme) => ({
+            ...glassPanel(theme),
+            width: "100%",
+          })}
+        >
+          <Stack spacing={3}>
+            <Typography
+              variant="h5"
+              sx={(theme) => ({
+                fontWeight: 600,
+                textAlign: "center",
+                color: theme.palette.text.primary,
+              })}
             >
-              {mutation.isPending ? "Registering..." : "Register"}
-            </Button>
-          </form>
+              Let's get you set up
+            </Typography>
 
-          <Box mt={2} textAlign="center">
-            <Typography variant="body2" color="text.secondary">
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+              <Stack spacing={2.5}>
+                <TextField
+                  label="Username"
+                  fullWidth
+                  {...register("username", {
+                    required: "Username is required",
+                  })}
+                  error={!!errors.username}
+                  helperText={errors.username?.message}
+                />
+                <TextField
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  {...register("email", { required: "Email is required" })}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? "Registering..." : "Register"}
+                </Button>
+              </Stack>
+            </Box>
+
+            <Typography
+              variant="body2"
+              textAlign="center"
+              color="text.secondary"
+            >
               Already have an account?{" "}
               <MuiLink component={RouterLink} to="/login">
                 Login here
               </MuiLink>
             </Typography>
-          </Box>
-        </Box>
-      </Paper>
-    </Container>
+          </Stack>
+        </Paper>
+      </Container>
+    </Box>
   );
 }

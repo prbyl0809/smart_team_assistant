@@ -12,30 +12,51 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar position="fixed">
+      <Toolbar
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          minHeight: { xs: 70, md: 80 },
+          gap: 3,
+          py: 1.25,
+          px: { xs: 2.5, md: 5, lg: 7 },
+        }}
+      >
+        <Box display="flex" alignItems="center" gap={3}>
+          <Box
+            component="img"
+            src="/logo-icon-gradient.svg"
+            alt="Project Manager Logo"
+            height={40}
+          />
+          <Typography
+            variant="h6"
+            component={RouterLink}
+            to="/"
+            sx={{
+              flexGrow: 0,
+              textDecoration: "none",
+              color: (theme) => theme.palette.text.primary,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+            }}
+          >
+            Smart Team Assistant
+          </Typography>
+        </Box>
+
         <Box
-          component={"img"}
-          src="/logo-icon-gradient.svg"
-          alt="Project Manager Logo"
-          height={40}
-          mr={2}
-        />
-        <Typography
-          variant="h6"
-          component={RouterLink}
-          to="/"
+          display="flex"
+          alignItems="center"
+          gap={1.5}
           sx={{
-            flexGrow: 1,
-            textDecoration: "none",
-            color: "white",
-            fontWeight: 600,
+            "& .MuiButton-root": {
+              fontSize: "0.95rem",
+            },
           }}
         >
-          Smart Team Assistant
-        </Typography>
-
-        <Box display="flex" gap={2}>
           {isAuthenticated ? (
             <>
               <Button component={RouterLink} to="/" color="inherit">
@@ -44,7 +65,7 @@ export default function Navbar() {
               <Button component={RouterLink} to="/projects" color="inherit">
                 Projects
               </Button>
-              <Button onClick={handleLogout} color="inherit">
+              <Button onClick={handleLogout} variant="outlined" color="inherit">
                 Logout
               </Button>
             </>
@@ -53,8 +74,13 @@ export default function Navbar() {
               <Button component={RouterLink} to="/login" color="inherit">
                 Login
               </Button>
-              <Button component={RouterLink} to="/register" color="inherit">
-                Register
+              <Button
+                component={RouterLink}
+                to="/register"
+                variant="contained"
+                color="primary"
+              >
+                Get Started
               </Button>
             </>
           )}

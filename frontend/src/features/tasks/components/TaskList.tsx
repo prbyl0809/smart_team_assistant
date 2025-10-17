@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Task, TaskStatus } from "../../../types/task";
+import { colors } from "../../../shared/styles/colors";
 import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
 
 type TaskListProps = {
@@ -31,17 +32,25 @@ const statusLabel = (status: TaskStatus) => {
   }
 };
 
-const statusColor = (status: TaskStatus) => {
-  switch (status) {
-    case "todo":
-      return "info";
-    case "in_progress":
-      return "warning";
-    case "done":
-      return "success";
-    default:
-      return "default";
-  }
+const STATUS_STYLES: Record<
+  TaskStatus,
+  { background: string; text: string; border: string }
+> = {
+  todo: {
+    background: colors.status.backlog,
+    text: colors.text.primary,
+    border: colors.status.backlog,
+  },
+  in_progress: {
+    background: colors.priority.medium,
+    text: colors.text.primary,
+    border: colors.priority.medium,
+  },
+  done: {
+    background: colors.status.completed,
+    text: colors.text.primary,
+    border: colors.priority.low,
+  },
 };
 
 const TaskListItem = ({
@@ -53,11 +62,7 @@ const TaskListItem = ({
   onChangeStatus: (taskId: number, status: TaskStatus) => void;
   onClick?: (task: Task) => void;
 }) => (
-  <ListItem
-    disablePadding
-    sx={{ mb: 0.5 }}
-    onClick={() => onClick?.(task)}
-  >
+  <ListItem disablePadding sx={{ mb: 0.5 }} onClick={() => onClick?.(task)}>
     <Paper
       variant="outlined"
       sx={{
@@ -88,61 +93,50 @@ const TaskListItem = ({
               onChangeStatus(task.id, e.target.value);
             }}
             onClick={(e) => e.stopPropagation()}
-            sx={(theme) => {
-              const key = statusColor(task.status);
-              const palette: any = theme.palette;
-              const tone = palette[key] ?? palette.primary;
-              return {
-                bgcolor: tone.main,
-                color: tone.contrastText,
-                borderRadius: 1,
-
-                padding: 0,
-                "& .MuiSelect-select": {
-                  display: "flex",
-                  alignItems: "center",
-                  p: 0.5,
-                  height: "0.8rem",
-                  fontWeight: "bold",
-                  fontSize: "0.65rem",
-                },
-                "& .MuiSvgIcon-root": {
-                  color: tone.contrastText,
-                },
-                "& fieldset": {
-                  borderColor: tone.dark,
-                },
-                "&:hover fieldset": {
-                  borderColor: tone.light,
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: tone.light,
-                },
-              };
+            sx={{
+              bgcolor: STATUS_STYLES[task.status].background,
+              color: STATUS_STYLES[task.status].text,
+              borderRadius: 1,
+              padding: 0,
+              "& .MuiSelect-select": {
+                display: "flex",
+                alignItems: "center",
+                p: 0.5,
+                height: "0.8rem",
+                fontWeight: "bold",
+                fontSize: "0.65rem",
+              },
+              "& .MuiSvgIcon-root": {
+                color: STATUS_STYLES[task.status].text,
+              },
+              "& fieldset": {
+                borderColor: STATUS_STYLES[task.status].border,
+              },
+              "&:hover fieldset": {
+                borderColor: STATUS_STYLES[task.status].border,
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: STATUS_STYLES[task.status].border,
+              },
             }}
           >
             {(["todo", "in_progress", "done"] as TaskStatus[]).map((status) => (
               <MenuItem
                 key={status}
                 value={status}
-                sx={(theme) => {
-                  const key = statusColor(status);
-                  const palette: any = theme.palette;
-                  const tone = palette[key] ?? palette.primary;
-                  return {
-                    bgcolor: tone.main,
-                    color: tone.contrastText,
-                    fontSize: "0.6rem",
+                sx={{
+                  bgcolor: STATUS_STYLES[status].background,
+                  color: STATUS_STYLES[status].text,
+                  fontSize: "0.6rem",
+                  "&:hover": {
+                    bgcolor: STATUS_STYLES[status].border,
+                  },
+                  "&.Mui-selected": {
+                    bgcolor: STATUS_STYLES[status].border,
                     "&:hover": {
-                      bgcolor: tone.dark,
+                      bgcolor: STATUS_STYLES[status].border,
                     },
-                    "&.Mui-selected": {
-                      bgcolor: tone.dark,
-                      "&:hover": {
-                        bgcolor: tone.dark,
-                      },
-                    },
-                  };
+                  },
                 }}
               >
                 {statusLabel(status)}

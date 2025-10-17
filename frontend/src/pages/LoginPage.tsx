@@ -2,15 +2,21 @@ import {
   Box,
   Button,
   Container,
+  Link as MuiLink,
   Paper,
+  Stack,
   TextField,
   Typography,
-  Link as MuiLink,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { useState } from "react";
-import { useLogin } from "../features/auth/hooks/useLogin";
 import { useNavigate, Link as RouterLink, useLocation } from "react-router-dom";
+import { useLogin } from "../features/auth/hooks/useLogin";
 import { useAuth } from "../features/auth/hooks/useAuth";
+import { glassPanel } from "../shared/styles/glassPanel";
+import HeroBanner from "../shared/components/HeroBanner";
+import { pageShellSx } from "../shared/styles/layout";
+import { colors } from "../shared/styles/colors";
 
 const demoCredentials = {
   username: "testuser",
@@ -44,82 +50,111 @@ export default function Login() {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <Typography variant="h4" gutterBottom>
-            Login
+    <Box sx={pageShellSx}>
+      <HeroBanner containerProps={{ maxWidth: "sm" }}>
+        <Stack spacing={2.5}>
+          <Typography variant="h3" sx={{ fontWeight: 700 }}>
+            Welcome back
           </Typography>
+          <Typography variant="body1" sx={{ color: colors.text.tertiary }}>
+            Sign in to access your projects, collaborate with the team, and keep
+            work moving forward without missing a beat.
+          </Typography>
+        </Stack>
+      </HeroBanner>
 
-          <Box
-            sx={{
-              width: "100%",
-              mt: 1,
-              p: 2,
-              borderRadius: 2,
-              backgroundColor: "background.default",
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-            }}
-          >
+      <Container
+        maxWidth="sm"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Paper
+          sx={(theme) => ({
+            ...glassPanel(theme),
+            width: "100%",
+          })}
+        >
+          <Stack spacing={3}>
+            <Box
+              sx={(theme) => ({
+                p: 2.5,
+                borderRadius: 2,
+                backgroundColor: alpha(theme.palette.secondary.main, 0.12),
+                border: `1px solid ${alpha(
+                  theme.palette.secondary.main,
+                  0.38
+                )}`,
+              })}
+            >
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={(theme) => ({
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                })}
+              >
+                Demo account
+              </Typography>
+              <Typography variant="body2" sx={{ color: colors.text.tertiary }}>
+                Username: {demoCredentials.username}
+              </Typography>
+              <Typography variant="body2" sx={{ color: colors.text.tertiary }}>
+                Password: {demoCredentials.password}
+              </Typography>
+            </Box>
+
+            {errorMsg && (
+              <Typography color="error" sx={{ textAlign: "center" }}>
+                {errorMsg}
+              </Typography>
+            )}
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2.5}>
+                <TextField
+                  label="Username"
+                  fullWidth
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  autoComplete="username"
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? "Logging in..." : "Login"}
+                </Button>
+              </Stack>
+            </Box>
+
             <Typography
-              variant="subtitle1"
-              gutterBottom
-              sx={{ fontWeight: 600 }}
+              variant="body2"
+              textAlign="center"
+              color="text.secondary"
             >
-              Test Account for Demo
+              Don't have an account?{" "}
+              <MuiLink component={RouterLink} to="/register">
+                Register here
+              </MuiLink>
             </Typography>
-            <Typography variant="body2">
-              Username: {demoCredentials.username}
-            </Typography>
-            <Typography variant="body2">
-              Password: {demoCredentials.password}
-            </Typography>
-          </Box>
-
-          {errorMsg && (
-            <Typography color="error" gutterBottom>
-              {errorMsg}
-            </Typography>
-          )}
-
-          <Box component="form" onSubmit={handleSubmit}>
-            <TextField
-              label="Username"
-              fullWidth
-              margin="normal"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-            />
-            <TextField
-              label="Password"
-              type="password"
-              fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              disabled={loginMutation.isPending}
-            >
-              {loginMutation.isPending ? "Logging in..." : "Login"}
-            </Button>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Typography variant="body2">
-            Don't have an account?{" "}
-            <MuiLink component={RouterLink} to="/register">
-              Register here
-            </MuiLink>
-          </Typography>
-        </Box>
-      </Paper>
-    </Container>
+          </Stack>
+        </Paper>
+      </Container>
+    </Box>
   );
 }

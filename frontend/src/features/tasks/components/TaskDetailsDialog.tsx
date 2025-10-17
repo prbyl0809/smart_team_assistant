@@ -118,8 +118,18 @@ export default function TaskDetailsDialog({
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit Task</DialogTitle>
-      <DialogContent>
+      <DialogTitle
+        sx={(theme) => ({
+          fontWeight: 700,
+          letterSpacing: "0.04em",
+          color: theme.palette.primary.main,
+          px: { xs: 3, sm: 4 },
+          pt: 3,
+        })}
+      >
+        Edit Task
+      </DialogTitle>
+      <DialogContent sx={{ px: { xs: 3, sm: 4 }, pb: 3 }}>
         <Stack
           key={task.id}
           component="form"
@@ -197,7 +207,13 @@ export default function TaskDetailsDialog({
             </Typography>
           </Box>
 
-          <DialogActions sx={{ px: 0 }}>
+          <DialogActions
+            sx={{
+              px: 0,
+              pt: 2,
+              justifyContent: "space-between",
+            }}
+          >
             <Button onClick={handleClose} disabled={isPending}>
               Cancel
             </Button>

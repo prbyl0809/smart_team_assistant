@@ -1,6 +1,7 @@
 import { Chip, Divider, Paper, Stack, Typography } from "@mui/material";
 import TaskList from "../../tasks/components/TaskList";
 import CreateTaskForm from "../../tasks/components/CreateTaskForm";
+import { glassPanel } from "../../../shared/styles/glassPanel";
 import { Task } from "../../../types/task";
 
 type TaskStats = {
@@ -25,12 +26,9 @@ export default function ProjectTasksCard({
   return (
     <Paper
       elevation={0}
-      sx={{
-        p: 3,
-        borderRadius: 2,
-        border: 1,
-        borderColor: (theme) => theme.palette.divider,
-      }}
+      sx={(theme) => ({
+        ...glassPanel(theme),
+      })}
     >
       <Stack
         direction="row"
@@ -40,16 +38,29 @@ export default function ProjectTasksCard({
       >
         <Typography variant="h6">Tasks</Typography>
         <Stack direction="row" spacing={1}>
-          <Chip label={`All ${stats.total}`} size="small" color="default" />
+          <Chip
+            label={`All ${stats.total}`}
+            size="small"
+            sx={{
+              bgcolor: "rgba(157, 108, 255, 0.12)",
+              color: "primary.light",
+            }}
+          />
           <Chip
             label={`In progress ${stats.inProgress}`}
             size="small"
-            color="warning"
+            sx={{
+              bgcolor: "rgba(255, 193, 79, 0.15)",
+              color: "warning.light",
+            }}
           />
           <Chip
             label={`Done ${stats.completed}`}
             size="small"
-            color="success"
+            sx={{
+              bgcolor: "rgba(112, 234, 165, 0.18)",
+              color: "success.light",
+            }}
           />
         </Stack>
       </Stack>
