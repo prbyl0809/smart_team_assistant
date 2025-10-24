@@ -7,7 +7,7 @@ pipeline {
   }
 
   parameters {
-    string(name: 'EC2_HOST', defaultValue: '3.120.227.99', description: 'EC2 public IP or DNS')
+    string(name: 'EC2_HOST', defaultValue: '3.120.227.99', description: 'EC2 public IP')
   }
 
   stages {
