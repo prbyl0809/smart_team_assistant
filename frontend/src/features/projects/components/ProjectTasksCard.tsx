@@ -78,9 +78,9 @@ export default function ProjectTasksCard({
 
   return (
     <Paper
-      sx={(theme) => ({
-        ...glassPanel(theme),
-      })}
+      sx={{
+        ...glassPanel(),
+      }}
     >
       <Stack
         direction={{ xs: "column", sm: "row" }}

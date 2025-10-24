@@ -24,7 +24,7 @@ import { useProjects } from "../features/projects/hooks/useProjects";
 import { Project } from "../types/project";
 import HeroBanner from "../shared/components/HeroBanner";
 import { pageShellSx } from "../shared/styles/layout";
-import { colors } from "../shared/styles/colors";
+import { glassPanel } from "../shared/styles/glassPanel";
 type StatPalette = "primary" | "success" | "warning" | "info";
 type StatDescriptor = {
   label: string;
@@ -135,7 +135,10 @@ export default function ProjectsPage() {
             </Typography>
             <Typography
               variant="body1"
-              sx={{ color: colors.text.tertiary, maxWidth: 540 }}
+              sx={{
+                color: (theme) => theme.palette.text.secondary,
+                maxWidth: 540,
+              }}
             >
               Assess delivery health, rally teammates, and keep momentum with a
               unified view of every project across the workspace.
@@ -145,18 +148,14 @@ export default function ProjectsPage() {
             {statsCards.map((stat) => (
               <Grid key={stat.label} size={{ xs: 12, sm: 6, md: 3 }}>
                 <Paper
-                  variant="outlined"
+                  elevation={0}
                   sx={{
+                    ...glassPanel(),
                     p: 3.5,
-                    borderRadius: 2,
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
                     gap: 1.75,
-                    bgcolor: alpha(colors.navy.surfaceAlt, 0.7),
-                    borderColor: alpha(colors.accent.cyan, 0.35),
-                    boxShadow:
-                      "0 14px 32px rgba(9, 16, 38, 0.55), inset 0 1px 0 rgba(255,255,255,0.08)",
                   }}
                 >
                   <Box
@@ -185,7 +184,7 @@ export default function ProjectsPage() {
                   <Typography
                     variant="caption"
                     fontSize={"0.875rem"}
-                    sx={{ color: colors.text.tertiary }}
+                    sx={{ color: (theme) => theme.palette.text.secondary }}
                   >
                     {stat.caption}
                   </Typography>
@@ -205,13 +204,10 @@ export default function ProjectsPage() {
         }}
       >
         <Paper
-          variant="outlined"
+          elevation={0}
           sx={{
+            ...glassPanel(),
             p: { xs: 2.5, md: 3 },
-            borderRadius: 2,
-            borderColor: "rgba(157, 108, 255, 0.22)",
-            backgroundColor: "rgba(17, 17, 35, 0.92)",
-            boxShadow: "0 18px 36px rgba(8, 9, 30, 0.45)",
           }}
         >
           <Stack
@@ -264,14 +260,11 @@ export default function ProjectsPage() {
           </Grid>
         ) : showEmptyState ? (
           <Paper
-            variant="outlined"
+            elevation={0}
             sx={{
+              ...glassPanel(),
               p: { xs: 4, md: 5 },
-              borderRadius: 2,
               textAlign: "center",
-              borderColor: "rgba(157, 108, 255, 0.22)",
-              backgroundColor: "rgba(17, 17, 35, 0.92)",
-              boxShadow: "0 18px 36px rgba(8, 9, 30, 0.45)",
             }}
           >
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
@@ -293,13 +286,10 @@ export default function ProjectsPage() {
               ))}
             </Grid>
             <Paper
-              variant="outlined"
+              elevation={0}
               sx={{
+                ...glassPanel(),
                 p: { xs: 3, md: 4 },
-                borderRadius: 2,
-                borderColor: "rgba(157, 108, 255, 0.22)",
-                backgroundColor: "rgba(17, 17, 35, 0.92)",
-                boxShadow: "0 18px 36px rgba(8, 9, 30, 0.45)",
               }}
             >
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>

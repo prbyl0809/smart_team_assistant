@@ -120,7 +120,7 @@ export default function ProjectDetailsPage() {
                       flex: 1,
                       p: 3,
                       borderRadius: 2,
-                      backgroundColor: alpha(colors.navy.surface, 0.62),
+                      backgroundColor: alpha(colors.base.surface, 0.62),
                       border: `1px solid ${alpha(
                         theme.palette.secondary.main,
                         0.28

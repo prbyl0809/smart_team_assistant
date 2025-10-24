@@ -55,9 +55,9 @@ export default function ProjectDetailsHeader({
   return (
     <Paper
       elevation={0}
-      sx={(theme) => ({
-        ...glassPanel(theme),
-      })}
+      sx={{
+        ...glassPanel(),
+      }}
     >
       <Stack spacing={2}>
         <InlineEditableText

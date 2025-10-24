@@ -15,7 +15,6 @@ import api from "../shared/api/axios";
 import { glassPanel } from "../shared/styles/glassPanel";
 import HeroBanner from "../shared/components/HeroBanner";
 import { pageShellSx } from "../shared/styles/layout";
-import { colors } from "../shared/styles/colors";
 
 type RegisterFormData = {
   username: string;
@@ -49,10 +48,13 @@ export default function Register() {
     <Box sx={pageShellSx}>
       <HeroBanner containerProps={{ maxWidth: "sm" }}>
         <Stack spacing={2.5}>
-          <Typography variant="h3" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="h2"
+            sx={{ color: (theme) => theme.palette.text.primary }}
+          >
             Create your account
           </Typography>
-          <Typography variant="body1" sx={{ color: colors.text.tertiary }}>
+          <Typography color="text.secondary" sx={{ maxWidth: 520 }}>
             Join the workspace to plan projects, connect with teammates, and
             deliver outcomes faster with shared visibility.
           </Typography>
@@ -65,13 +67,15 @@ export default function Register() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          pt: { xs: 3, md: 3.5 },
+          pb: { xs: 5, md: 6 },
         }}
       >
         <Paper
-          sx={(theme) => ({
-            ...glassPanel(theme),
+          sx={{
+            ...glassPanel(),
             width: "100%",
-          })}
+          }}
         >
           <Stack spacing={3}>
             <Typography

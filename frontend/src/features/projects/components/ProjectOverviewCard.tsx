@@ -15,9 +15,9 @@ export default function ProjectOverviewCard({
   return (
     <Paper
       elevation={0}
-      sx={(theme) => ({
-        ...glassPanel(theme),
-      })}
+      sx={{
+        ...glassPanel(),
+      }}
     >
       <Typography variant="h6" gutterBottom>
         Overview

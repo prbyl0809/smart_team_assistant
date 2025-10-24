@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { Project } from "../../../types/project";
 import { glassPanel } from "../../../shared/styles/glassPanel";
 import { projectPriorityOptions, projectStatusOptions } from "./constants";
@@ -21,9 +22,9 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
   return (
     <Paper
       elevation={0}
-      sx={(theme) => ({
-        ...glassPanel(theme),
-      })}
+      sx={{
+        ...glassPanel(),
+      }}
     >
       <Typography variant="h6" gutterBottom>
         Project info
@@ -41,11 +42,16 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
                   (option) => option.value === project.status
                 )?.label ?? project.status
               }
-              sx={{
-                bgcolor: "rgba(157, 108, 255, 0.18)",
-                color: "primary.light",
-                border: "1px solid rgba(157, 108, 255, 0.32)",
-              }}
+              sx={(theme) => ({
+                bgcolor: alpha(theme.palette.secondary.main, 0.14),
+                color: theme.palette.secondary.light,
+                border: `1px solid ${alpha(
+                  theme.palette.secondary.main,
+                  0.32
+                )}`,
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+              })}
             />
           }
         />
@@ -59,11 +65,13 @@ export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
                   (option) => option.value === project.priority
                 )?.label ?? project.priority
               }
-              sx={{
-                bgcolor: "rgba(92, 200, 255, 0.16)",
-                color: "secondary.light",
-                border: "1px solid rgba(92, 200, 255, 0.32)",
-              }}
+              sx={(theme) => ({
+                bgcolor: alpha(theme.palette.primary.main, 0.12),
+                color: theme.palette.primary.light,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                fontWeight: 500,
+                letterSpacing: "0.02em",
+              })}
             />
           }
         />

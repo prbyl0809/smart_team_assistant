@@ -1,10 +1,26 @@
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../features/auth/hooks/useAuth";
+import { colors } from "../styles/colors";
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 12);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -12,7 +28,29 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar position="fixed">
+    <AppBar
+      position="fixed"
+      elevation={0}
+      color="transparent"
+      sx={[
+        {
+          color: (theme) => theme.palette.text.primary,
+          transition:
+            "background-color 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease",
+        },
+        isScrolled
+          ? {
+              backgroundColor: "rgba(12, 16, 22, 0.6)",
+              borderBottom: `1px solid ${colors.border.subtle}`,
+              backdropFilter: "blur(8px)",
+            }
+          : {
+              backgroundColor: colors.base.background,
+              borderBottom: "1px solid rgba(255,255,255,0.04)",
+              backdropFilter: "none",
+            },
+      ]}
+    >
       <Toolbar
         sx={{
           display: "flex",
@@ -71,14 +109,19 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Button component={RouterLink} to="/login" color="inherit">
+              <Button
+                component={RouterLink}
+                to="/login"
+                color="inherit"
+                variant="text"
+              >
                 Login
               </Button>
               <Button
                 component={RouterLink}
                 to="/register"
-                variant="contained"
-                color="primary"
+                variant="outlined"
+                color="secondary"
               >
                 Get Started
               </Button>
