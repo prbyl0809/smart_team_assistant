@@ -6,6 +6,10 @@ pipeline {
     IMG_FRONT = "smartteam/frontend"
   }
 
+  parameters {
+    string(name: 'EC2_HOST', defaultValue: '3.120.227.99', description: 'EC2 public IP or DNS')
+  }
+
   stages {
     stage('Init') {
       steps {
@@ -42,34 +46,54 @@ pipeline {
     }
 
     stage('Push to Docker Hub') {
-        steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
-            sh """
-                set -e
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DH_USER', passwordVariable: 'DH_TOKEN')]) {
+          sh """
+            set -e
+            echo "\$DH_TOKEN" | docker login -u "\$DH_USER" --password-stdin
 
-                echo "\$DH_TOKEN" | docker login -u "\$DH_USER" --password-stdin
+            BACK_REMOTE="\$DH_USER/smartteam-backend"
+            FRONT_REMOTE="\$DH_USER/smartteam-frontend"
 
-                BACK_REMOTE="\$DH_USER/smartteam-backend"
-                FRONT_REMOTE="\$DH_USER/smartteam-frontend"
+            for tag in ${BUILD_NUMBER} ${GIT_SHA} latest; do
+              docker tag ${IMG_BACK}:\$tag  \${BACK_REMOTE}:\$tag
+              docker tag ${IMG_FRONT}:\$tag \${FRONT_REMOTE}:\$tag
+              docker push \${BACK_REMOTE}:\$tag
+              docker push \${FRONT_REMOTE}:\$tag
+            done
 
-                for tag in ${BUILD_NUMBER} ${GIT_SHA} latest; do
-                docker tag ${IMG_BACK}:\$tag  \${BACK_REMOTE}:\$tag
-                docker tag ${IMG_FRONT}:\$tag \${FRONT_REMOTE}:\$tag
-
-                docker push \${BACK_REMOTE}:\$tag
-                docker push \${FRONT_REMOTE}:\$tag
-                done
-
-                docker logout || true
-            """
-            }
+            docker logout || true
+          """
         }
+      }
+    }
+
+    stage('Deploy to EC2') {
+      steps {
+        sshagent(credentials: ['ec2-ssh']) {
+          sh """
+            set -e
+            mkdir -p ~/.ssh; touch ~/.ssh/known_hosts; chmod 600 ~/.ssh/known_hosts
+            ssh-keyscan -H ${params.EC2_HOST} >> ~/.ssh/known_hosts || true
+
+            ssh -o BatchMode=yes ubuntu@${params.EC2_HOST} '
+              set -e
+              cd ~/smartteam
+              docker compose pull
+              docker compose up -d --force-recreate
+            '
+          """
+        }
+      }
     }
   }
 
   post {
     success {
-      echo "Pushed ${IMG_BACK} and ${IMG_FRONT} with tags: ${BUILD_NUMBER}, ${GIT_SHA}, latest"
+      echo "Pushed & Deployed ${IMG_BACK} and ${IMG_FRONT} with tags: ${BUILD_NUMBER}, ${GIT_SHA}, latest"
+    }
+    failure {
+      echo "Build or Deploy failed. Check logs."
     }
   }
 }

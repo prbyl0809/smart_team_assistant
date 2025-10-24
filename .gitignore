@@ -35,6 +35,9 @@ coverage.xml
 # Docker local overrides
 docker-compose.override.yml
 
+# Internal docs
+internal/
+
 # Python (backend)
 backend/__pycache__/
 backend/**/*.py[cod]
