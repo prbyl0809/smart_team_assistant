@@ -2,6 +2,7 @@ from app.routers import auth
 from app.routers import user
 from app.routers import project
 from app.routers import task
+from app.routers import comment
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -28,3 +29,4 @@ app.include_router(user.router, prefix="/api", tags=["Users"])
 app.include_router(auth.router, prefix="/api", tags=["Auth"])
 app.include_router(project.router, prefix="/api", tags=["Projects"])
 app.include_router(task.router, prefix="/api", tags=["Tasks"])
+app.include_router(comment.router, prefix="/api", tags=["Comments"])

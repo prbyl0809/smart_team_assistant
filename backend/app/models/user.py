@@ -14,6 +14,7 @@ class User(Base):
 
     projects: Mapped[List["Project"]] = relationship(back_populates="owner")
     tasks: Mapped[List["Task"]] = relationship(back_populates="assignee")
+    comments: Mapped[List["Comment"]] = relationship(back_populates="author")
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}', email='{self.email}')>"

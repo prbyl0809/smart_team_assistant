@@ -47,6 +47,9 @@ class Project(Base):
 
     owner: Mapped["User"] = relationship(back_populates="projects")
     tasks: Mapped[List["Task"]] = relationship(back_populates="project")
+    comments: Mapped[List["Comment"]] = relationship(
+        back_populates="project", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Project(id={self.id}, name='{self.name}', owner_id={self.owner_id}, status='{self.status}', priority='{self.priority}')>"
