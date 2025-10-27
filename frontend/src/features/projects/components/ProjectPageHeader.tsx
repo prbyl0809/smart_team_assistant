@@ -53,15 +53,12 @@ export function ProjectPageHeader({
   return (
     <Box
       sx={{
-        position: "relative",
-        left: "50%",
-        right: "50%",
-        marginLeft: "-50vw",
-        marginRight: "-50vw",
-        width: "100vw",
+        width: "100%",
         borderBottom: `1px solid ${colors.border.subtle}`,
         backgroundColor: colors.base.surface,
-        py: { xs: 2.5, md: 3 },
+        mt: 0,
+        pt: { xs: 5.5, md: 6.5 },
+        pb: { xs: 3, md: 4 },
         mb: { xs: 1, md: 1.5 },
       }}
     >
@@ -73,21 +70,11 @@ export function ProjectPageHeader({
           display: "flex",
           flexDirection: "column",
           gap: theme.spacing(1.5),
-          paddingLeft: theme.spacing(2.5),
-          paddingRight: theme.spacing(2.5),
-          [theme.breakpoints.up("md")]: {
-            paddingLeft: theme.spacing(4),
-            paddingRight: theme.spacing(4),
-          },
-          [theme.breakpoints.up("lg")]: {
-            paddingLeft: theme.spacing(7),
-            paddingRight: theme.spacing(7),
-          },
         })}
       >
         <Breadcrumbs
           aria-label="breadcrumb"
-          separator=">"
+          separator="›"
           sx={{ color: colors.text.secondary, "& a": { color: "inherit" } }}
         >
           <Link component={RouterLink} to="/projects" underline="hover">

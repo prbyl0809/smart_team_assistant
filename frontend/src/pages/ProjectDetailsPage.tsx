@@ -24,6 +24,7 @@ import { useProjectTaskStats } from "../features/projects/hooks/useProjectTaskSt
 import { Task } from "../types/task";
 import { colors } from "../shared/styles/colors";
 import { formatDate } from "../shared/utils/date";
+import { pageShellSx } from "../shared/styles/layout";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
@@ -102,13 +103,7 @@ export default function ProjectDetailsPage() {
   const summaryCardId = "project-summary-card";
 
   return (
-    <Box
-      sx={{
-        bgcolor: colors.base.background,
-        minHeight: "100vh",
-        pb: { xs: 6, md: 8 },
-      }}
-    >
+    <Box sx={pageShellSx}>
       <ProjectPageHeader
         projectName={project.name}
         projectId={project.id}
@@ -134,7 +129,6 @@ export default function ProjectDetailsPage() {
       <Container
         maxWidth="xl"
         sx={{
-          pt: { xs: 4, md: 5 },
           display: "flex",
           flexDirection: "column",
           gap: 4,
