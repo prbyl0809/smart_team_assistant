@@ -1,7 +1,7 @@
-import { Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import InlineEditableText from "../../../shared/components/inline/InlineEditableText";
-import { glassPanel } from "../../../shared/styles/glassPanel";
 import { ProjectUpdatePayload } from "../api/projects";
+import { colors } from "../../../shared/styles/colors";
 
 type ProjectOverviewCardProps = {
   description: string;
@@ -13,14 +13,21 @@ export default function ProjectOverviewCard({
   onUpdate,
 }: ProjectOverviewCardProps) {
   return (
-    <Paper
-      elevation={0}
+    <Box
       sx={{
-        ...glassPanel(),
+        borderRadius: 2,
+        border: `1px solid ${colors.border.subtle}`,
+        backgroundColor: colors.base.surface,
+        px: { xs: 2.5, md: 3 },
+        py: { xs: 2.5, md: 3 },
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Overview
+      <Typography variant="h6">Overview</Typography>
+      <Typography variant="body2" color="text.secondary">
+        Share context, goals, and scope of this project with your team.
       </Typography>
       <InlineEditableText
         value={description}
@@ -29,6 +36,6 @@ export default function ProjectOverviewCard({
         multiline
         minRows={4}
       />
-    </Paper>
+    </Box>
   );
 }

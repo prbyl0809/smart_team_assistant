@@ -1,6 +1,5 @@
-import {
-  Box,
-  FormControl,
+﻿import {
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -9,6 +8,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+
 import { Task, TaskStatus } from "../../../types/task";
 import { colors } from "../../../shared/styles/colors";
 import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
@@ -61,95 +62,139 @@ const TaskListItem = ({
   task: Task;
   onChangeStatus: (taskId: number, status: TaskStatus) => void;
   onClick?: (task: Task) => void;
-}) => (
-  <ListItem disablePadding sx={{ mb: 0.5 }} onClick={() => onClick?.(task)}>
-    <Paper
-      variant="outlined"
-      sx={{
-        px: 2,
-        py: 1,
-        width: "100%",
-        bgcolor: "background.paper",
-        cursor: onClick ? "pointer" : "default",
-        "&:hover": {
-          boxShadow: 4,
-        },
-      }}
-    >
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Box>
-          <Typography variant="subtitle1" fontWeight={500}>
-            {task.title}
-          </Typography>
-        </Box>
-
-        <FormControl>
-          <Select
-            id={`${task.id}`}
-            value={task.status}
-            renderValue={(value) => statusLabel(value)}
-            onChange={(e) => {
-              e.stopPropagation();
-              onChangeStatus(task.id, e.target.value);
-            }}
-            onClick={(e) => e.stopPropagation()}
-            sx={{
-              bgcolor: STATUS_STYLES[task.status].background,
-              color: STATUS_STYLES[task.status].text,
-              borderRadius: 1,
-              minWidth: 132,
-              padding: 0,
-              "& .MuiSelect-select": {
-                display: "flex",
-                alignItems: "center",
-                px: 1,
-                py: 0,
-                height: "22px",
-                fontWeight: "bold",
-                fontSize: "0.65rem",
-              },
-              "& .MuiSvgIcon-root": {
-                color: STATUS_STYLES[task.status].text,
-              },
-              "& fieldset": {
-                borderColor: STATUS_STYLES[task.status].border,
-              },
-              "&:hover fieldset": {
-                borderColor: STATUS_STYLES[task.status].border,
-              },
-              "&.Mui-focused fieldset": {
-                borderColor: STATUS_STYLES[task.status].border,
-              },
-            }}
-          >
-            {(["todo", "in_progress", "done"] as TaskStatus[]).map((status) => (
-              <MenuItem
-                key={status}
-                value={status}
+}) => {
+  return (
+    <ListItem disablePadding sx={{ mb: 1 }} onClick={() => onClick?.(task)}>
+      <Paper
+        variant="outlined"
+        sx={{
+          width: "100%",
+          borderRadius: 2,
+          borderColor: colors.border.subtle,
+          backgroundColor: colors.base.surfaceAlt,
+          px: 2.25,
+          py: 1.25,
+          cursor: onClick ? "pointer" : "default",
+          transition: "border-color 0.2s ease, transform 0.2s ease",
+          "&:hover": {
+            borderColor: colors.accent.secondary.light,
+            transform: "translateY(-1px)",
+          },
+        }}
+      >
+        <Stack
+          direction={{ xs: "column", md: "row" }}
+          alignItems={{ xs: "flex-start", md: "center" }}
+          justifyContent="space-between"
+          spacing={1.5}
+        >
+          <Stack spacing={0.5} flex={1} minWidth={0}>
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              sx={{ wordBreak: "break-word" }}
+            >
+              {task.title}
+            </Typography>
+            {task.description ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
                 sx={{
-                  bgcolor: STATUS_STYLES[status].background,
-                  color: STATUS_STYLES[status].text,
-                  fontSize: "0.6rem",
-                  "&:hover": {
-                    bgcolor: STATUS_STYLES[status].border,
-                  },
-                  "&.Mui-selected": {
-                    bgcolor: STATUS_STYLES[status].border,
-                    "&:hover": {
-                      bgcolor: STATUS_STYLES[status].border,
-                    },
-                  },
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
-                {statusLabel(status)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
-    </Paper>
-  </ListItem>
-);
+                {task.description}
+              </Typography>
+            ) : null}
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1} flexShrink={0}>
+            <Select
+              id={`${task.id}`}
+              value={task.status}
+              renderValue={(value) => statusLabel(value)}
+              onChange={(event) => {
+                event.stopPropagation();
+                onChangeStatus(task.id, event.target.value as TaskStatus);
+              }}
+              onClick={(event) => event.stopPropagation()}
+              size="small"
+              sx={{
+                bgcolor: STATUS_STYLES[task.status].background,
+                color: STATUS_STYLES[task.status].text,
+                borderRadius: 2,
+                minWidth: 140,
+                "& .MuiSelect-select": {
+                  display: "flex",
+                  alignItems: "center",
+                  px: 1.25,
+                  py: 0.5,
+                  fontWeight: 600,
+                  fontSize: "0.75rem",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: STATUS_STYLES[task.status].text,
+                },
+                "& fieldset": {
+                  borderColor: STATUS_STYLES[task.status].border,
+                },
+                "&:hover fieldset, &.Mui-focused fieldset": {
+                  borderColor: STATUS_STYLES[task.status].border,
+                },
+              }}
+            >
+              {(["todo", "in_progress", "done"] as TaskStatus[]).map(
+                (status) => (
+                  <MenuItem
+                    key={status}
+                    value={status}
+                    sx={{
+                      bgcolor: STATUS_STYLES[status].background,
+                      color: STATUS_STYLES[status].text,
+                      fontSize: "0.75rem",
+                      "&:hover": {
+                        bgcolor: STATUS_STYLES[status].border,
+                      },
+                      "&.Mui-selected": {
+                        bgcolor: STATUS_STYLES[status].border,
+                        "&:hover": {
+                          bgcolor: STATUS_STYLES[status].border,
+                        },
+                      },
+                    }}
+                  >
+                    {statusLabel(status)}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+
+            {onClick && (
+              <IconButton
+                size="small"
+                color="inherit"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onClick(task);
+                }}
+                sx={{
+                  borderRadius: 2,
+                  border: `1px solid ${colors.border.subtle}`,
+                }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            )}
+          </Stack>
+        </Stack>
+      </Paper>
+    </ListItem>
+  );
+};
 
 export default function TaskList({
   tasks,
@@ -157,19 +202,27 @@ export default function TaskList({
   onTaskClick,
 }: TaskListProps) {
   const { mutate: updateStatus } = useUpdateTaskStatus(projectId);
+
   if (!tasks || tasks.length === 0) {
     return (
       <Paper
         variant="outlined"
-        sx={{ p: 3, borderRadius: 2, bgcolor: "background.paper" }}
+        sx={{
+          p: 3,
+          borderRadius: 2,
+          borderColor: colors.border.subtle,
+          backgroundColor: colors.base.surfaceAlt,
+        }}
       >
-        <Typography color="text.secondary">No tasks available.</Typography>
+        <Typography color="text.secondary">
+          No tasks match the selected filters.
+        </Typography>
       </Paper>
     );
   }
 
   return (
-    <List>
+    <List disablePadding>
       {tasks.map((task) => (
         <TaskListItem
           key={task.id}

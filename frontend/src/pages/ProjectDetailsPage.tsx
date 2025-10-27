@@ -1,209 +1,195 @@
-import { useMemo, useState } from "react";
+﻿import { MouseEvent, ReactNode, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Box,
   CircularProgress,
   Container,
-  Grid,
   Stack,
   Typography,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+
 import ProjectDetailsHeader from "../features/projects/components/ProjectDetailsHeader";
-import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
 import ProjectOverviewCard from "../features/projects/components/ProjectOverviewCard";
 import ProjectTasksCard from "../features/projects/components/ProjectTasksCard";
+import ProjectInfoCard from "../features/projects/components/ProjectInfoCard";
+import ProjectCommentsCard from "../features/projects/components/ProjectCommentsCard";
 import TaskDetailsDialog from "../features/tasks/components/TaskDetailsDialog";
+import { ProjectPageHeader } from "../features/projects/components/ProjectPageHeader";
+import { ProjectMetricsStrip } from "../features/projects/components/ProjectMetricsStrip";
+
 import { useProjectDetails } from "../features/projects/hooks/useProjectDetails";
 import { useUpdateProject } from "../features/projects/hooks/useUpdateProject";
 import { useUsers } from "../features/users/hooks/useUsers";
+import { useProjectTaskStats } from "../features/projects/hooks/useProjectTaskStats";
 import { Task } from "../types/task";
-import HeroBanner from "../shared/components/HeroBanner";
 import { colors } from "../shared/styles/colors";
-import { pageShellSx } from "../shared/styles/layout";
+import { formatDate } from "../shared/utils/date";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
   const projectId = Number(id);
-
   const isProjectIdValid = Number.isInteger(projectId) && projectId > 0;
   const safeProjectId = isProjectIdValid ? projectId : 0;
 
   const { data, isLoading, isError, error } = useProjectDetails(safeProjectId);
   const { mutateAsync: updateProject } = useUpdateProject(safeProjectId);
   const { data: users = [], isLoading: usersLoading } = useUsers();
+
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [actionsAnchorEl, setActionsAnchorEl] = useState<HTMLElement | null>(
+    null
+  );
 
-  const taskStats = useMemo(() => {
-    const total = data?.tasks.length ?? 0;
-    const completed =
-      data?.tasks.filter((task) => task.status === "done").length ?? 0;
-    const inProgress =
-      data?.tasks.filter((task) => task.status === "in_progress").length ?? 0;
-    const todo =
-      data?.tasks.filter((task) => task.status === "todo").length ?? 0;
+  const actionsMenuOpen = Boolean(actionsAnchorEl);
 
-    return { total, todo, completed, inProgress };
-  }, [data?.tasks]);
+  const stats = useProjectTaskStats(data?.tasks ?? []);
 
   if (!isProjectIdValid) {
     return (
-      <Container maxWidth="md">
-        <Box mt={6} textAlign="center">
-          <Typography variant="h5">Invalid project identifier</Typography>
-        </Box>
-      </Container>
+      <FullHeightCenter>
+        <Typography variant="h5" gutterBottom>
+          Invalid project identifier
+        </Typography>
+        <Typography color="text.secondary">
+          Please return to the projects list and try again.
+        </Typography>
+      </FullHeightCenter>
     );
   }
 
   if (isLoading) {
     return (
-      <Container maxWidth="md">
-        <Box mt={6} display="flex" justifyContent="center">
-          <CircularProgress />
-        </Box>
-      </Container>
+      <FullHeightCenter>
+        <CircularProgress />
+      </FullHeightCenter>
     );
   }
 
   if (isError || !data) {
     return (
-      <Container maxWidth="md">
-        <Box mt={6} textAlign="center">
-          <Typography variant="h5" gutterBottom>
-            Error loading project details
-          </Typography>
-          <Typography color="text.secondary">
-            {error instanceof Error ? error.message : "Please try again later."}
-          </Typography>
-        </Box>
-      </Container>
+      <FullHeightCenter>
+        <Typography variant="h5" gutterBottom>
+          Error loading project details
+        </Typography>
+        <Typography color="text.secondary">
+          {error instanceof Error ? error.message : "Please try again later."}
+        </Typography>
+      </FullHeightCenter>
     );
   }
 
   const { project, tasks } = data;
 
-  const summaryStats: Array<{
-    label: string;
-    value: number | string;
-    palette: "primary" | "warning" | "success" | "secondary";
-  }> = [
-    { label: "Total tasks", value: taskStats.total, palette: "primary" },
-    { label: "To do", value: taskStats.todo, palette: "secondary" },
-    { label: "In progress", value: taskStats.inProgress, palette: "warning" },
-    { label: "Completed", value: taskStats.completed, palette: "success" },
-  ];
+  const owner = users.find((user) => user.id === project.owner_id);
+  const ownerName = owner?.username ?? `Owner #${project.owner_id}`;
+  const dueDateLabel = project.due_date
+    ? formatDate(project.due_date)
+    : "No due date";
+  const createdDateLabel = formatDate(project.created_at);
+
+  const handleOpenActions = (event: MouseEvent<HTMLElement>) =>
+    setActionsAnchorEl(event.currentTarget);
+  const handleCloseActions = () => setActionsAnchorEl(null);
+
+  const handleOpenCreateTask = () => {
+    setCreateTaskOpen(true);
+    handleCloseActions();
+  };
+
+  const handleCloseCreateTask = () => setCreateTaskOpen(false);
+
+  const summaryCardId = "project-summary-card";
 
   return (
-    <>
-      <Box sx={pageShellSx}>
-        <HeroBanner containerProps={{ maxWidth: "xl" }}>
-          <Stack spacing={4}>
-            <Box>
-              <Typography variant="overline" sx={{ letterSpacing: "0.12em" }}>
-                Project
-              </Typography>
-              <Typography variant="h3" sx={{ fontWeight: 700 }}>
-                {project.name}
-              </Typography>
-            </Box>
+    <Box
+      sx={{
+        bgcolor: colors.base.background,
+        minHeight: "100vh",
+        pb: { xs: 6, md: 8 },
+      }}
+    >
+      <ProjectPageHeader
+        projectName={project.name}
+        projectId={project.id}
+        status={project.status}
+        ownerName={ownerName}
+        dueDateLabel={dueDateLabel}
+        createdDateLabel={createdDateLabel}
+        onEditProject={() => {
+          const target = document.getElementById(summaryCardId);
+          if (target) {
+            const top =
+              target.getBoundingClientRect().top + window.scrollY - 120;
+            window.scrollTo({ top, behavior: "smooth" });
+          }
+        }}
+        onAddTask={handleOpenCreateTask}
+        onOpenActions={handleOpenActions}
+        onCloseActions={handleCloseActions}
+        actionsAnchorEl={actionsAnchorEl}
+        actionsMenuOpen={actionsMenuOpen}
+      />
 
-            <Grid container spacing={2}>
-              {summaryStats.map((stat) => (
-                <Grid
-                  key={stat.label}
-                  size={{ xs: 6, sm: 3 }}
-                  sx={{ display: "flex" }}
-                >
-                  <Box
-                    sx={(theme) => ({
-                      flex: 1,
-                      p: 3,
-                      borderRadius: 2,
-                      backgroundColor: alpha(colors.base.surface, 0.62),
-                      border: `1px solid ${alpha(
-                        theme.palette.secondary.main,
-                        0.28
-                      )}`,
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 0.75,
-                      boxShadow:
-                        "0 14px 32px rgba(8, 10, 30, 0.48), inset 0 1px 0 rgba(255,255,255,0.06)",
-                    })}
-                  >
-                    <Typography
-                      variant="h4"
-                      sx={(theme) => ({
-                        fontWeight: 700,
-                        color: theme.palette[stat.palette].main,
-                      })}
-                    >
-                      {stat.value}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: colors.text.tertiary }}
-                    >
-                      {stat.label}
-                    </Typography>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Stack>
-        </HeroBanner>
+      <Container
+        maxWidth="xl"
+        sx={{
+          pt: { xs: 4, md: 5 },
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+        }}
+      >
+        <ProjectMetricsStrip stats={stats} />
 
-        <Container
-          maxWidth="xl"
+        <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 4, md: 5 },
+            display: "grid",
+            gap: { xs: 3, md: 4 },
+            gridTemplateColumns: {
+              xs: "1fr",
+              lg: "minmax(0, 8fr) minmax(0, 4fr)",
+            },
+            alignItems: "start",
           }}
         >
-          <ProjectDetailsHeader
-            project={project}
-            users={users}
-            isUsersLoading={usersLoading}
-            onUpdate={async (payload) => {
-              await updateProject(payload);
-            }}
-          />
-
-          <Box
-            sx={{
-              display: "grid",
-              gap: 3,
-              gridTemplateColumns: {
-                xs: "1fr",
-                lg: "minmax(0,2fr) minmax(0,1fr)",
-              },
-              alignItems: "start",
-            }}
-          >
-            <Stack spacing={3}>
-              <ProjectOverviewCard
-                description={project.description}
+          <Stack spacing={{ xs: 3, md: 4 }}>
+            <Box id={summaryCardId}>
+              <ProjectDetailsHeader
+                project={project}
+                users={users}
+                isUsersLoading={usersLoading}
                 onUpdate={async (payload) => {
                   await updateProject(payload);
                 }}
               />
+            </Box>
 
-              <ProjectTasksCard
-                projectId={safeProjectId}
-                tasks={tasks}
-                stats={taskStats}
-                onTaskClick={(task) => setSelectedTask(task)}
-              />
-            </Stack>
+            <ProjectOverviewCard
+              description={project.description}
+              onUpdate={async (payload) => {
+                await updateProject(payload);
+              }}
+            />
 
-            <Stack spacing={3}>
-              <ProjectInfoCard project={project} />
-            </Stack>
-          </Box>
-        </Container>
-      </Box>
+            <ProjectTasksCard
+              projectId={safeProjectId}
+              tasks={tasks}
+              onTaskClick={(task) => setSelectedTask(task)}
+              users={users}
+              openCreateDialog={createTaskOpen}
+              onCloseCreateDialog={handleCloseCreateTask}
+              onOpenCreateDialog={handleOpenCreateTask}
+            />
+          </Stack>
+
+          <Stack spacing={{ xs: 3, md: 4 }}>
+            <ProjectInfoCard project={project} ownerName={ownerName} />
+            <ProjectCommentsCard projectId={safeProjectId} />
+          </Stack>
+        </Box>
+      </Container>
+
       <TaskDetailsDialog
         open={!!selectedTask}
         task={selectedTask}
@@ -211,6 +197,24 @@ export default function ProjectDetailsPage() {
         projectId={safeProjectId}
         users={users}
       />
-    </>
+    </Box>
+  );
+}
+
+function FullHeightCenter({ children }: { children: ReactNode }) {
+  return (
+    <Box
+      sx={{
+        bgcolor: colors.base.background,
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        px: 3,
+      }}
+    >
+      <Stack spacing={2}>{children}</Stack>
+    </Box>
   );
 }

@@ -1,108 +1,115 @@
-import type { ReactNode } from "react";
-import { Box, Chip, Paper, Stack, Typography } from "@mui/material";
+import { ReactNode } from "react";
+import { Box, Chip, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+
 import { Project } from "../../../types/project";
-import { glassPanel } from "../../../shared/styles/glassPanel";
+import { colors } from "../../../shared/styles/colors";
+import { formatDateTime } from "../../../shared/utils/date";
 import { projectPriorityOptions, projectStatusOptions } from "./constants";
 
 type ProjectInfoCardProps = {
   project: Project;
+  ownerName: string;
 };
 
-const formatDateTime = (value: string) =>
-  new Intl.DateTimeFormat(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
+export default function ProjectInfoCard({
+  project,
+  ownerName,
+}: ProjectInfoCardProps) {
+  const statusChipLabel =
+    projectStatusOptions.find((option) => option.value === project.status)
+      ?.label ?? project.status;
+  const priorityChipLabel =
+    projectPriorityOptions.find((option) => option.value === project.priority)
+      ?.label ?? project.priority;
 
-export default function ProjectInfoCard({ project }: ProjectInfoCardProps) {
   return (
-    <Paper
-      elevation={0}
+    <Box
       sx={{
-        ...glassPanel(),
+        borderRadius: 2,
+        border: `1px solid ${colors.border.subtle}`,
+        backgroundColor: colors.base.surface,
+        px: { xs: 2.5, md: 3 },
+        py: { xs: 2.5, md: 3 },
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        Project info
+      <Typography variant="h6">Project info</Typography>
+      <Typography variant="body2" color="text.secondary">
+        Key details and metadata about this project.
       </Typography>
-      <Stack spacing={1.5}>
-        <InfoRow label="Created" value={formatDateTime(project.created_at)} />
-        <InfoRow label="Updated" value={formatDateTime(project.updated_at)} />
-        <InfoRow
+
+      <Box
+        sx={{
+          display: "grid",
+          gap: 2,
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+        }}
+      >
+        <InfoCell label="Created" value={formatDateTime(project.created_at)} />
+        <InfoCell label="Updated" value={formatDateTime(project.updated_at)} />
+        <InfoCell label="Owner" value={ownerName} />
+        <InfoCell
           label="Status"
-          value={
-            <Chip
-              size="small"
-              label={
-                projectStatusOptions.find(
-                  (option) => option.value === project.status
-                )?.label ?? project.status
-              }
-              sx={(theme) => ({
-                bgcolor: alpha(theme.palette.secondary.main, 0.14),
-                color: theme.palette.secondary.light,
-                border: `1px solid ${alpha(
-                  theme.palette.secondary.main,
-                  0.32
-                )}`,
-                fontWeight: 500,
-                letterSpacing: "0.02em",
-              })}
-            />
-          }
+          value={<StatusChip label={statusChipLabel} />}
         />
-        <InfoRow
+        <InfoCell
           label="Priority"
-          value={
-            <Chip
-              size="small"
-              label={
-                projectPriorityOptions.find(
-                  (option) => option.value === project.priority
-                )?.label ?? project.priority
-              }
-              sx={(theme) => ({
-                bgcolor: alpha(theme.palette.primary.main, 0.12),
-                color: theme.palette.primary.light,
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
-                fontWeight: 500,
-                letterSpacing: "0.02em",
-              })}
-            />
-          }
+          value={<PriorityChip label={priorityChipLabel} />}
         />
-        <InfoRow label="Archived" value={project.is_archived ? "Yes" : "No"} />
-      </Stack>
-    </Paper>
+        <InfoCell label="Archived" value={project.is_archived ? "Yes" : "No"} />
+      </Box>
+    </Box>
   );
 }
 
-type InfoRowProps = {
+type InfoCellProps = {
   label: string;
-  value: string | number | ReactNode;
+  value: ReactNode;
 };
 
-function InfoRow({ label, value }: InfoRowProps) {
-  const content =
-    typeof value === "string" || typeof value === "number" ? (
-      <Typography fontWeight={500}>{value}</Typography>
-    ) : (
-      <Box>{value}</Box>
-    );
-
+function InfoCell({ label, value }: InfoCellProps) {
   return (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-      gap={2}
-    >
-      <Typography color="text.secondary">{label}</Typography>
-      {content}
+    <Stack spacing={0.5}>
+      <Typography
+        variant="caption"
+        sx={{ textTransform: "uppercase", color: colors.text.secondary }}
+      >
+        {label}
+      </Typography>
+      <Typography component="div" sx={{ fontWeight: 500 }}>
+        {value}
+      </Typography>
     </Stack>
   );
 }
+
+const StatusChip = ({ label }: { label: string }) => (
+  <Chip
+    size="small"
+    label={label}
+    sx={(theme) => ({
+      bgcolor: alpha(theme.palette.secondary.main, 0.16),
+      color: theme.palette.secondary.light,
+      border: `1px solid ${alpha(theme.palette.secondary.main, 0.32)}`,
+      fontWeight: 500,
+      textTransform: "capitalize",
+    })}
+  />
+);
+
+const PriorityChip = ({ label }: { label: string }) => (
+  <Chip
+    size="small"
+    label={label}
+    sx={(theme) => ({
+      bgcolor: alpha(theme.palette.primary.main, 0.12),
+      color: theme.palette.primary.light,
+      border: `1px solid ${alpha(theme.palette.primary.main, 0.32)}`,
+      fontWeight: 500,
+      textTransform: "capitalize",
+    })}
+  />
+);

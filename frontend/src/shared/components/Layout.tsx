@@ -12,7 +12,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }}
     >
       <Navbar />
-      <Toolbar sx={(theme) => theme.mixins.toolbar} />
+      <Toolbar
+        sx={{
+          minHeight: { xs: 70, md: 80 },
+          py: 1.25,
+        }}
+      />
       <Box
         component="main"
         sx={{
