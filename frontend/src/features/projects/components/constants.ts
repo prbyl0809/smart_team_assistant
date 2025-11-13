@@ -16,5 +16,3 @@ export const projectPriorityOptions: InlineEditableSelectOption<ProjectPriority>
     { value: "medium", label: "Medium", color: colors.priority.medium },
     { value: "high", label: "High", color: colors.priority.high },
   ];
-
-// dummy
