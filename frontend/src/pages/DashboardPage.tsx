@@ -11,6 +11,8 @@ import {
   TextField,
   Typography,
   Button,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
@@ -234,32 +236,45 @@ export default function DashboardPage() {
               <MenuItem value="name">Name A–Z</MenuItem>
             </TextField>
 
-            <Stack direction="row" spacing={1} flexWrap="wrap">
-              {statusFilters.map((item) => {
-                const selected = item.value === statusFilter;
-                return (
-                  <Chip
-                    key={item.value}
-                    label={item.label}
-                    onClick={() => setStatusFilter(item.value)}
-                    size="small"
-                    sx={{
-                      borderRadius: 99,
-                      border: `1px solid ${
-                        selected
-                          ? colors.accent.primary.light
-                          : colors.border.default
-                      }`,
-                      backgroundColor: selected
-                        ? alpha(colors.accent.primary.main, 0.16)
-                        : colors.base.surface,
-                      color: colors.text.primary,
-                      px: 0.5,
-                    }}
-                  />
-                );
-              })}
-            </Stack>
+            <ToggleButtonGroup
+              exclusive
+              value={statusFilter}
+              onChange={(_, value) => value && setStatusFilter(value)}
+              size="small"
+              color="primary"
+              sx={{
+                borderRadius: 1,
+                overflow: "hidden",
+                border: `1px solid ${colors.border.default}`,
+                "& .MuiToggleButton-root": {
+                  borderRadius: 0,
+                  borderColor: "transparent",
+                  color: colors.text.primary,
+                  px: 1.75,
+                  py: 0.75,
+                  textTransform: "none",
+                },
+                "& .MuiToggleButtonGroup-grouped:not(:last-of-type)": {
+                  borderRight: `1px solid ${colors.border.default}`,
+                },
+                "& .MuiToggleButtonGroup-grouped:not(:first-of-type)": {
+                  marginLeft: 0,
+                },
+                "& .Mui-selected": {
+                  backgroundColor: alpha(colors.accent.primary.main, 0.12),
+                  color: colors.text.primary,
+                },
+                "& .MuiToggleButton-root:hover": {
+                  backgroundColor: alpha(colors.accent.primary.main, 0.08),
+                },
+              }}
+            >
+              {statusFilters.map((item) => (
+                <ToggleButton key={item.value} value={item.value}>
+                  {item.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
             <Button
               variant="text"
               onClick={handleToggleExpandAll}
