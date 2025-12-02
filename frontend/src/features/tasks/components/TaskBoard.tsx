@@ -14,12 +14,10 @@ import TaskCard from "./TaskCard";
 import { Task } from "../../../types/task";
 import { Box } from "@mui/material";
 import { useUpdateTaskStatus } from "../hooks/useUpdateTaskStatus";
-
-const columns = [
-  { status: "todo", label: "To Do" },
-  { status: "in_progress", label: "In Progress" },
-  { status: "done", label: "Done" },
-] as const;
+import { colors } from "../../../shared/styles/colors";
+import { alpha } from "@mui/material/styles";
+import { useUsers } from "../../users/hooks/useUsers";
+import { boardColumns } from "../../../shared/constants/dashboard";
 
 type Props = {
   tasks: Task[];
@@ -30,6 +28,8 @@ export default function TaskBoard({ tasks: incomingTasks, projectId }: Props) {
   const [tasks, setTasks] = useState<Task[]>(incomingTasks);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { mutate: updateStatus } = useUpdateTaskStatus(projectId);
+  const { data: users = [] } = useUsers();
+  const userList = users ?? [];
 
   useEffect(() => {
     setTasks(incomingTasks);
@@ -67,25 +67,50 @@ export default function TaskBoard({ tasks: incomingTasks, projectId }: Props) {
       onDragEnd={handleDragEnd}
     >
       <Box
-        display="flex"
-        gap={2}
-        justifyContent="space-between"
-        alignItems="stretch"
-        data-project-id={projectId}
+        sx={{
+          p: { xs: 1.25, md: 1.75 },
+          borderRadius: 3,
+          border: `1px solid ${colors.border.default}`,
+          background: colors.base.surfaceAlt,
+          boxShadow: `0 10px 26px ${alpha(colors.border.default, 0.35)}`,
+          overflow: "hidden",
+        }}
       >
-        {columns.map((col) => (
-          <Box key={col.status} flex={1} minWidth={300}>
-            <TaskColumn
-              status={col.status}
-              label={col.label}
-              tasks={tasks.filter((t) => t.status === col.status)}
-            />
-          </Box>
-        ))}
+        <Box
+          data-project-id={projectId}
+          sx={{
+            display: "grid",
+            gap: { xs: 1.25, md: 1.5 },
+            gridTemplateColumns: {
+              xs: `repeat(${boardColumns.length}, minmax(260px, 1fr))`,
+              lg: `repeat(${boardColumns.length}, minmax(0, 1fr))`,
+            },
+            alignItems: "stretch",
+            overflowX: "auto",
+            pb: 0.5,
+            pr: { xs: 1, md: 0 },
+          }}
+        >
+          {boardColumns.map((col) => (
+            <Box
+              key={col.status}
+              sx={{
+                minWidth: { xs: 260, md: 0 },
+              }}
+            >
+              <TaskColumn
+                status={col.status}
+                label={col.label}
+                tasks={tasks.filter((t) => t.status === col.status)}
+                users={userList}
+              />
+            </Box>
+          ))}
+        </Box>
       </Box>
 
       <DragOverlay>
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+        {activeTask ? <TaskCard task={activeTask} users={userList} /> : null}
       </DragOverlay>
     </DndContext>
   );
