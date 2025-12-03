@@ -1,0 +1,86 @@
+import { Box, Paper, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { glassPanel } from "../../../shared/styles/glassPanel";
+
+export type StatCardData = {
+  label: string;
+  value: number;
+  caption: string;
+  icon: React.ReactElement;
+  palette: "primary" | "success" | "warning" | "info";
+};
+
+type ProjectsStatsGridProps = {
+  stats: StatCardData[];
+};
+
+export function ProjectsStatsGrid({ stats }: ProjectsStatsGridProps) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gap: 2,
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 260px))",
+        justifyContent: "left",
+        justifyItems: "stretch",
+      }}
+    >
+      {stats.map((stat) => (
+        <Paper
+          key={stat.label}
+          elevation={0}
+          sx={{
+            ...glassPanel(),
+            p: 3.25,
+            height: "100%",
+            minHeight: 120,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.25,
+            borderColor: (theme) =>
+              alpha(theme.palette[stat.palette].main, 0.28),
+            backgroundImage: (theme) =>
+              `linear-gradient(180deg, ${alpha(
+                theme.palette[stat.palette].main,
+                0.08
+              )} 0%, transparent 100%)`,
+          }}
+        >
+          <Box
+            sx={{
+              width: 44,
+              height: 44,
+              borderRadius: 2,
+              bgcolor: (theme) => alpha(theme.palette[stat.palette].main, 0.2),
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: (theme) => theme.palette[stat.palette].main,
+            }}
+          >
+            {stat.icon}
+          </Box>
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              {stat.value}
+            </Typography>
+            <Typography variant="body2" color="inherit">
+              {stat.label}
+            </Typography>
+          </Box>
+          <Typography
+            variant="caption"
+            fontSize={"0.875rem"}
+            sx={{
+              color: (theme) => theme.palette.text.secondary,
+            }}
+          >
+            {stat.caption}
+          </Typography>
+        </Paper>
+      ))}
+    </Box>
+  );
+}
+
+export default ProjectsStatsGrid;
