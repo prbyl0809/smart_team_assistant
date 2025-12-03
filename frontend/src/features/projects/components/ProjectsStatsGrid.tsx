@@ -8,6 +8,7 @@ export type StatCardData = {
   caption: string;
   icon: React.ReactElement;
   palette: "primary" | "success" | "warning" | "info";
+  ratio?: number; // 0..1
 };
 
 type ProjectsStatsGridProps = {
@@ -77,6 +78,45 @@ export function ProjectsStatsGrid({ stats }: ProjectsStatsGridProps) {
           >
             {stat.caption}
           </Typography>
+          {typeof stat.ratio === "number" && (
+            <Box sx={{ mt: 0.5 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 0.5,
+                  color: (theme) => theme.palette.text.secondary,
+                }}
+              >
+                <Typography variant="caption">
+                  {Math.round(stat.ratio * 100)}%
+                </Typography>
+                <Typography variant="caption">of total</Typography>
+              </Box>
+              <Box
+                sx={{
+                  height: 8,
+                  borderRadius: 999,
+                  backgroundColor: (theme) =>
+                    alpha(theme.palette[stat.palette].main, 0.12),
+                  overflow: "hidden",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: `${Math.min(Math.max(stat.ratio, 0), 1) * 100}%`,
+                    height: "100%",
+                    backgroundImage: (theme) =>
+                      `linear-gradient(90deg, ${alpha(
+                        theme.palette[stat.palette].main,
+                        0.4
+                      )}, ${theme.palette[stat.palette].main})`,
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
         </Paper>
       ))}
     </Box>

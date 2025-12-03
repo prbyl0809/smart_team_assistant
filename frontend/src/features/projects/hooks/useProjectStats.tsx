@@ -42,6 +42,9 @@ const computeStats = (projects: Project[]) => {
 export function useProjectStats(projects: Project[] | undefined) {
   return useMemo<StatCardData[]>(() => {
     const stats = computeStats(projects ?? []);
+    const ratio = (value: number) =>
+      stats.total > 0 ? Math.min(Math.max(value / stats.total, 0), 1) : 0;
+
     return [
       {
         label: "Total projects",
@@ -49,6 +52,7 @@ export function useProjectStats(projects: Project[] | undefined) {
         caption: "Across every stage",
         icon: statsIcons.primary,
         palette: "primary",
+        ratio: 1,
       },
       {
         label: "Active now",
@@ -56,6 +60,7 @@ export function useProjectStats(projects: Project[] | undefined) {
         caption: "Moving work forward",
         icon: statsIcons.success,
         palette: "success",
+        ratio: ratio(stats.active),
       },
       {
         label: "Due within 7 days",
@@ -63,6 +68,7 @@ export function useProjectStats(projects: Project[] | undefined) {
         caption: "Deadlines approaching",
         icon: statsIcons.warning,
         palette: "warning",
+        ratio: ratio(stats.dueSoon),
       },
       {
         label: "Completed",
@@ -70,6 +76,7 @@ export function useProjectStats(projects: Project[] | undefined) {
         caption: "Wrapped and delivered",
         icon: statsIcons.info,
         palette: "info",
+        ratio: ratio(stats.completed),
       },
     ];
   }, [projects]);
