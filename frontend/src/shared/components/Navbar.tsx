@@ -120,8 +120,16 @@ export default function Navbar() {
               <Button
                 component={RouterLink}
                 to="/register"
-                variant="outlined"
-                color="secondary"
+                variant="contained"
+                color="primary"
+                sx={{
+                  minHeight: 44,
+                  px: 2.4,
+                  borderRadius: 999,
+                  boxShadow: colors.shadows.button,
+                  background: colors.effects.primaryButtonGradient,
+                  "&:hover": { boxShadow: colors.shadows.buttonHover },
+                }}
               >
                 Get Started
               </Button>

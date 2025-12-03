@@ -31,6 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Box
         component="footer"
         sx={{
+          mt: { xs: 3, md: 4 },
           py: 3,
           borderTop: (theme) => `1px solid ${theme.palette.divider}`,
         }}

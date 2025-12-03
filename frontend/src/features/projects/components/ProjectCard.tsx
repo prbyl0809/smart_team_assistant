@@ -208,19 +208,6 @@ export default function ProjectCard({ project }: Props) {
           />
         </Stack>
 
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {project.description || "No description added yet."}
-        </Typography>
-
         <Divider />
 
         <Stack
